@@ -146,13 +146,13 @@ services:
   ollama-gpu:
     profiles: ["gpu-nvidia"]
     <<: *service-ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
     gpus: all
     environment:
       - OLLAMA_HOST=0.0.0.0:11434
