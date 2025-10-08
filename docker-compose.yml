@@ -211,8 +211,8 @@ services:
     networks:
       - demo
     healthcheck:
-    # NEW: Check ngrok's internal web interface on port 4040
-    test: ["CMD-SHELL", "pidof ngrok > /dev/null || exit 1"]
-    interval: 15s
-    timeout: 5s
-    retries: 5
+      # NEW: Check ngrok's internal web interface on port 4040
+      test: ["CMD-SHELL", "pidof ngrok > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
