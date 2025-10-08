@@ -47,7 +47,12 @@ x-ollama: &service-ollama
   volumes:
     - ./ollama_models:/root/.ollama
   healthcheck:
-    test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
+    # test: ["CMD", "curl", "-fsS", "http://localhost:11434/api/tags"]
+    test:
+      [
+        "CMD-SHELL",
+        "wget -q http://localhost:11434/api/tags -O /dev/null || exit 1",
+      ]
     interval: 10s
     timeout: 5s
     retries: 20
@@ -61,10 +66,10 @@ x-init-ollama: &init-ollama
   entrypoint: /bin/sh
   environment:
     - OLLAMA_HOST=ollama:11434
-  command: 
-    - "-c" 
+  command:
+    - "-c"
     - "ollama pull llama3.2 & ollama pull gpt-oss:20b"
-    
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -80,7 +85,11 @@ services:
     volumes:
       - postgres_storage:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -118,7 +127,9 @@ services:
       # n8n-import:
       #   condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:5678/"]
+      # Use CMD-SHELL and wget for maximum compatibility
+      test:
+        ["CMD-SHELL", "wget -q http://localhost:5678/ -O /dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -134,7 +145,12 @@ services:
     volumes:
       - qdrant_storage:/qdrant/storage
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:6333/readyz"]
+      # test: ["CMD", "curl", "-fsS", "http://localhost:6333/readyz"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q http://localhost:6333/readyz -O /dev/null || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -188,9 +204,15 @@ services:
     command:
       - "http"
       - "--log=stdout"
-      - "--domain=${NGROK_DOMAIN}"      # static subdomain (if reserved)
-      - "n8n:5678"                      # target inside Docker network
+      - "--domain=${NGROK_DOMAIN}" # static subdomain (if reserved)
+      - "n8n:5678" # target inside Docker network
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     networks:
       - demo
+    healthcheck:
+    # NEW: Check ngrok's internal web interface on port 4040
+    test: ["CMD-SHELL", "pidof ngrok > /dev/null || exit 1"]
+    interval: 15s
+    timeout: 5s
+    retries: 5
