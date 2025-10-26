@@ -42,6 +42,8 @@ x-ollama: &service-ollama
   restart: unless-stopped
   ports:
     - "127.0.0.1:11434:11434"
+  # ports:
+  #   - 11434:11434
   environment:
     - OLLAMA_HOST=0.0.0.0:11434
   volumes:
@@ -78,6 +80,8 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:5432:5432"
+    # ports:
+    #   - 5432:5432
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -142,6 +146,8 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:6333:6333"
+    # ports:
+    #   - 6333:6333
     volumes:
       - qdrant_storage:/qdrant/storage
     healthcheck:
@@ -194,25 +200,34 @@ services:
       - "sleep 3; ollama pull llama3.2 && ollama pull gpt-oss:20b" # Pulls both sequentially
     depends_on:
       - ollama-gpu
-
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: ngrok
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel
     restart: unless-stopped
-    depends_on:
-      - n8n
-    command:
-      - "http"
-      - "--log=stdout"
-      - "--domain=${NGROK_DOMAIN}" # static subdomain (if reserved)
-      - "n8n:5678" # target inside Docker network
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     networks:
-      - demo
-    healthcheck:
-      # NEW: Check ngrok's internal web interface on port 4040
-      test: ["CMD-SHELL", "pidof ngrok > /dev/null || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
+      - demo # <-- MUST be on the same 'demo' network
+    command: tunnel --no-autoupdate run
+    environment:
+      # This token comes from your Cloudflare Zero Trust dashboard
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   container_name: ngrok
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - n8n
+  #   command:
+  #     - "http"
+  #     - "--log=stdout"
+  #     - "--domain=${NGROK_DOMAIN}" # static subdomain (if reserved)
+  #     - "n8n:5678" # target inside Docker network
+  #   environment:
+  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+  #   networks:
+  #     - demo
+  #   healthcheck:
+  #     # NEW: Check ngrok's internal web interface on port 4040
+  #     test: ["CMD-SHELL", "pidof ngrok > /dev/null || exit 1"]
+  #     interval: 15s
+  #     timeout: 5s
+  #     retries: 5
