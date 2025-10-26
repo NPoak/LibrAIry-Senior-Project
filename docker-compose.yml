@@ -210,6 +210,15 @@ services:
     environment:
       # This token comes from your Cloudflare Zero Trust dashboard
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q http://localhost:2000/ready -O /dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # ngrok:
   #   image: ngrok/ngrok:latest
   #   container_name: ngrok
