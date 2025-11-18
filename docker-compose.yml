@@ -74,12 +74,12 @@ x-init-ollama: &init-ollama
 
 services:
   postgres:
-    image: pgvector/pgvector:pg16-v0.7.2-alpine
+    image: pgvector/pgvector:pg16
     hostname: postgres
     networks: ["demo"]
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5432:5432"
+      - 5432:5432
     # ports:
     #   - 5432:5432
     environment:
