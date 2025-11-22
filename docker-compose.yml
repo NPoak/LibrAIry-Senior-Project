@@ -7,7 +7,7 @@ networks:
   demo:
 
 x-n8n: &service-n8n # image: n8nio/n8n:latest
-  build: .
+  image : n8n
   networks: ["demo"]
   environment:
     - DB_TYPE=postgresdb
