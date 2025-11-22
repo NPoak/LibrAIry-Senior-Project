@@ -7,7 +7,7 @@ networks:
   demo:
 
 x-n8n: &service-n8n # image: n8nio/n8n:latest
-  image : n8n
+  image : n8n-python
   networks: ["demo"]
   environment:
     - DB_TYPE=postgresdb
