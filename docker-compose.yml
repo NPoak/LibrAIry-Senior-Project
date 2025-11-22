@@ -7,7 +7,7 @@ networks:
   demo:
 
 x-n8n: &service-n8n # image: n8nio/n8n:latest
-  image : n8n-python
+  image: n8n-python
   networks: ["demo"]
   environment:
     - DB_TYPE=postgresdb
@@ -192,7 +192,29 @@ services:
       - "sleep 3; ollama pull llama3.2 && ollama pull gpt-oss:20b" # Pulls both sequentially
     depends_on:
       - ollama-cpu
-
+  python-worker:
+    build: ./python-worker
+    container_name: python-worker
+    restart: unless-stopped
+    networks:
+      - demo
+    ports:
+      - "8000:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   ollama-pull-all-gpu:
     profiles: ["gpu-nvidia"] # only runs if you start with --profile gpu-nvidia
     <<: *init-ollama

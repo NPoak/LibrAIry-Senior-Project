@@ -1,0 +1,5 @@
+sentence_transformers>=3.0.0
+numpy>=2.0.0
+fastapi
+uvicorn
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
