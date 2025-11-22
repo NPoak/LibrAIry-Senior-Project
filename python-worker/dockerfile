@@ -3,12 +3,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies (including GPU support)
+# --- FIXED SECTION START ---
+# 1. Install PyTorch (Heavy dependency) FIRST & Separately
+# This layer will be cached. Docker won't re-download 2GB if you change requirements.txt later.
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu121
+
+# 2. Then install the rest of the apps (Light dependencies)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# --- FIXED SECTION END ---
 
 # Pre-download the model to cache it inside the image
-# This prevents downloading it every time you restart
 RUN python3 -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')"
 
 # Copy the application code

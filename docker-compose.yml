@@ -7,7 +7,10 @@ networks:
   demo:
 
 x-n8n: &service-n8n # image: n8nio/n8n:latest
-  image: n8n-python
+  build:
+    context: .
+    dockerfile: dockerfile
+  # image: n8n-python
   networks: ["demo"]
   environment:
     - DB_TYPE=postgresdb
@@ -193,7 +196,9 @@ services:
     depends_on:
       - ollama-cpu
   python-worker:
-    build: ./python-worker
+    build:
+      context: ./python-worker
+      dockerfile: dockerfile
     container_name: python-worker
     restart: unless-stopped
     networks:
