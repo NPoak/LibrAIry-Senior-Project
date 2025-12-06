@@ -3,6 +3,8 @@ Step 1: create .env.example in cloned folder
 - cp .env.example .env
   Step 2: start compose
   docker compose --profile gpu-nvidia up -d --build
+  For update image version
+  docker compose build --pull
 
 Additional:
 To Access n8n workflow (no VPN needed) -> https://carola-suppositious-gloatingly.ngrok-free.dev/
