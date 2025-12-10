@@ -2,6 +2,7 @@ volumes:
   n8n_storage:
   postgres_storage:
   qdrant_storage:
+  portainer_data_librairy:
 
 networks:
   demo:
@@ -248,6 +249,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: librairy-portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data_librairy:/data # เก็บข้อมูลแยก ไม่ปนกับคนอื่น
+    ports:
+      - "9001:9000" # เข้าผ่าน Port 9001
+    networks:
+      - demo
   # ngrok:
   #   image: ngrok/ngrok:latest
   #   container_name: ngrok
