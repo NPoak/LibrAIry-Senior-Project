@@ -105,6 +105,10 @@ async def faculty_embed(request: Request):
                     "facultyName": facultyName,
                     "facultyDescriptionTH": facultyDescriptionTH,
                     "facultyDescriptionEN": facultyDescriptionEN
+                    "combined_text_used": text_to_embed,
+                    "vector": vector_list,
+                    "vector_text": vector_str_format,
+                    "dimension": len(vector_list)
                 })
             else:
                 output_items.append({"error": "No content to embed", "facultyName": facultyName})
@@ -159,6 +163,10 @@ async def faculty_embed(request: Request):
                     "DepartmentDescriptionTH": DepartmentDescriptionTH,
                     "DepartmentDescriptionEN": DepartmentDescriptionEN,
                     "Degree": degree
+                    "combined_text_used": text_to_embed,
+                    "vector": vector_list,
+                    "vector_text": vector_str_format,
+                    "dimension": len(vector_list)
                 })
             else:
                 output_items.append({"error": "No content to embed", "DepartmentName": DepartmentName})
