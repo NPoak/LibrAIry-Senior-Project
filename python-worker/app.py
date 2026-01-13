@@ -107,7 +107,7 @@ async def faculty_embed(request: Request):
                     "facultyNameTH": facultyNameTH,
                     "facultyNameEN": facultyNameEN,
                     "facultyDescriptionTH": facultyDescriptionTH,
-                    "facultyDescriptionEN": facultyDescriptionEN
+                    "facultyDescriptionEN": facultyDescriptionEN,
                     "combined_text_used": text_to_embed,
                     "vector": vector_list,
                     "vector_text": vector_str_format,
@@ -168,7 +168,7 @@ async def faculty_embed(request: Request):
                     "DepartmentNameEN": DepartmentNameEN,
                     "DepartmentDescriptionTH": DepartmentDescriptionTH,
                     "DepartmentDescriptionEN": DepartmentDescriptionEN,
-                    "Degree": degree
+                    "Degree": degree,
                     "combined_text_used": text_to_embed,
                     "vector": vector_list,
                     "vector_text": vector_str_format,
