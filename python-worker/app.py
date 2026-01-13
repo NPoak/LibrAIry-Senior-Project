@@ -81,14 +81,16 @@ async def faculty_embed(request: Request):
         try:
             # Extract fields
             # Note: Direct JSON input uses .get(), not .json.get()
-            facultyName = item.get('FacultyName', '') or ""
+            facultyNameTH = item.get('FacultyNameTH', '') or ""
+            facultyNameEN = item.get('FacultyNameEN', '') or ""
             facultyDescriptionTH = item.get('FacultyDescriptionTH', '') or ""
             facultyDescriptionEN = item.get('FacultyDescriptionEN', '') or ""
 
             parts = [
-                f"facultyName: {facultyName}",
+                f"facultyNameTH: {facultyNameTH}",
+                f"facultyNameEN: {facultyNameEN}",
                 f"facultyDescriptionTH: {facultyDescriptionTH}" if facultyDescriptionTH else "",
-                f"Publisher: {facultyDescriptionEN}" if facultyDescriptionEN else "",
+                f"facultyDescriptionEN: {facultyDescriptionEN}" if facultyDescriptionEN else "",
             ]
 
             text_to_embed = ". ".join([p for p in parts if p != ""])
@@ -102,7 +104,8 @@ async def faculty_embed(request: Request):
                 vector_str_format = str(vector_list).replace(" ", "")
 
                 output_items.append({
-                    "facultyName": facultyName,
+                    "facultyNameTH": facultyNameTH,
+                    "facultyNameEN": facultyNameEN,
                     "facultyDescriptionTH": facultyDescriptionTH,
                     "facultyDescriptionEN": facultyDescriptionEN
                     "combined_text_used": text_to_embed,
@@ -137,12 +140,14 @@ async def faculty_embed(request: Request):
             # Extract fields
             # Note: Direct JSON input uses .get(), not .json.get()
             degree = item.get('Degree', '') or ""
-            DepartmentName = item.get('DepartmentName', '') or ""
+            DepartmentNameTH = item.get('DepartmentNameTH', '') or ""
+            DepartmentNameEN = item.get('DepartmentNameEN', '') or ""
             DepartmentDescriptionTH = item.get('DepartmentDescriptionTH', '') or ""
             DepartmentDescriptionEN = item.get('DepartmentDescriptionEN', '') or ""
 
             parts = [
-                f"DepartmentName: {DepartmentName}",
+                f"DepartmentNameTH: {DepartmentNameTH}",
+                f"DepartmentNameEN: {DepartmentNameEN}",
                 f"DepartmentDescriptionTH: {DepartmentDescriptionTH}" if DepartmentDescriptionTH else "",
                 f"DepartmentDescriptionEN: {DepartmentDescriptionEN}" if DepartmentDescriptionEN else "",
                 f"Degree: {degree}" if degree else ""
@@ -159,7 +164,8 @@ async def faculty_embed(request: Request):
                 vector_str_format = str(vector_list).replace(" ", "")
 
                 output_items.append({
-                    "DepartmentName": DepartmentName,
+                    "DepartmentNameTH": DepartmentNameTH,
+                    "DepartmentNameEN": DepartmentNameEN,
                     "DepartmentDescriptionTH": DepartmentDescriptionTH,
                     "DepartmentDescriptionEN": DepartmentDescriptionEN,
                     "Degree": degree
