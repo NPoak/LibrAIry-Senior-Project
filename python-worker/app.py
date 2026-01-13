@@ -30,12 +30,14 @@ async def embed_items(request: Request):
             author = item.get('author', '') or ""
             publisher = item.get('publisher', '') or ""
             description = item.get('description', '') or ""
+            reason = item.get('reason', '') or item.get('specify_reason', '') or ""
 
             # --- YOUR EXACT LOGIC START ---
             parts = [
                 f"Title: {title}",
                 f"Author: {author}" if author else "",
                 f"Publisher: {publisher}" if publisher else "",
+                f"User Context: {reason}" if reason else "",
                 f"Description: {description}" if description else ""
             ]
             text_to_embed = ". ".join([p for p in parts if p != ""])
