@@ -12,7 +12,7 @@ MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 # Load model to GPU
 encoder = SentenceTransformer(MODEL_NAME, device=device)
 
-@app.post("/embed")
+@app.post("/bookembed")
 async def embed_items(request: Request):
     # Get input data from n8n HTTP Request
     input_data = await request.json()
