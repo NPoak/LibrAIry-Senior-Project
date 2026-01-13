@@ -66,3 +66,107 @@ async def embed_items(request: Request):
             })
 
     return output_items
+
+@app.post("/facultyembed")
+async def faculty_embed(request: Request):
+    # Get input data from n8n HTTP Request
+    input_data = await request.json()
+
+    # Ensure it's a list to match your original loop logic
+    items = input_data if isinstance(input_data, list) else [input_data]
+
+    output_items = []
+
+    for item in items:
+        try:
+            # Extract fields
+            # Note: Direct JSON input uses .get(), not .json.get()
+            facultyName = item.get('FacultyName', '') or ""
+            facultyDescriptionTH = item.get('FacultyDescriptionTH', '') or ""
+            facultyDescriptionEN = item.get('FacultyDescriptionEN', '') or ""
+
+            parts = [
+                f"facultyName: {facultyName}",
+                f"facultyDescriptionTH: {facultyDescriptionTH}" if facultyDescriptionTH else "",
+                f"Publisher: {facultyDescriptionEN}" if facultyDescriptionEN else "",
+            ]
+
+            text_to_embed = ". ".join([p for p in parts if p != ""])
+
+            if text_to_embed:
+                # Encode on GPU
+                embedding = encoder.encode(text_to_embed)
+                vector_list = embedding.tolist()
+
+                # Your specific string formatting
+                vector_str_format = str(vector_list).replace(" ", "")
+
+                output_items.append({
+                    "facultyName": facultyName,
+                    "facultyDescriptionTH": facultyDescriptionTH,
+                    "facultyDescriptionEN": facultyDescriptionEN
+                })
+            else:
+                output_items.append({"error": "No content to embed", "facultyName": facultyName})
+
+        except:
+            output_items.append({
+                "error": str(e),
+                "facultyName": item.get('facultyName')
+            })
+    
+    return output_items
+
+
+@app.post("/departmentembed")
+async def faculty_embed(request: Request):
+    # Get input data from n8n HTTP Request
+    input_data = await request.json()
+
+    # Ensure it's a list to match your original loop logic
+    items = input_data if isinstance(input_data, list) else [input_data]
+
+    output_items = []
+
+    for item in items:
+        try:
+            # Extract fields
+            # Note: Direct JSON input uses .get(), not .json.get()
+            degree = item.get('Degree', '') or ""
+            DepartmentName = item.get('DepartmentName', '') or ""
+            DepartmentDescriptionTH = item.get('DepartmentDescriptionTH', '') or ""
+            DepartmentDescriptionEN = item.get('DepartmentDescriptionEN', '') or ""
+
+            parts = [
+                f"DepartmentName: {DepartmentName}",
+                f"DepartmentDescriptionTH: {DepartmentDescriptionTH}" if DepartmentDescriptionTH else "",
+                f"DepartmentDescriptionEN: {DepartmentDescriptionEN}" if DepartmentDescriptionEN else "",
+                f"Degree: {degree}" if degree else ""
+            ]
+
+            text_to_embed = ". ".join([p for p in parts if p != ""])
+
+            if text_to_embed:
+                # Encode on GPU
+                embedding = encoder.encode(text_to_embed)
+                vector_list = embedding.tolist()
+
+                # Your specific string formatting
+                vector_str_format = str(vector_list).replace(" ", "")
+
+                output_items.append({
+                    "DepartmentName": DepartmentName,
+                    "DepartmentDescriptionTH": DepartmentDescriptionTH,
+                    "DepartmentDescriptionEN": DepartmentDescriptionEN,
+                    "Degree": degree
+                })
+            else:
+                output_items.append({"error": "No content to embed", "DepartmentName": DepartmentName})
+
+        except:
+            output_items.append({
+                "error": str(e),
+                "DepartmentName": item.get('DepartmentName')
+            })
+    
+    return output_items
