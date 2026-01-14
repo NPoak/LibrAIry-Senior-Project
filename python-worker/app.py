@@ -25,7 +25,6 @@ async def embed_items(request: Request):
     for item in items:
         try:
             # Extract fields
-            # Note: Direct JSON input uses .get(), not .json.get()
             title = item.get('title', '') or ""
             author = item.get('author', '') or ""
             publisher = item.get('publisher', '') or ""
@@ -50,22 +49,28 @@ async def embed_items(request: Request):
                 # Your specific string formatting
                 vector_str_format = str(vector_list).replace(" ", "")
 
-                output_items.append({
-                    "title": title,
+                # --- จุดที่แก้ไข (ใช้ .copy() เพื่อรักษา ID) ---
+                result_item = item.copy()  # <--- Copy request_id, batch_id ติดมาด้วย
+                
+                result_item.update({
                     "combined_text_used": text_to_embed,
                     "vector": vector_list,
                     "vector_text": vector_str_format,
                     "dimension": len(vector_list)
                 })
+
+                output_items.append(result_item)
             else:
-                output_items.append({"error": "No content to embed", "title": title})
+                # กรณี Error ก็ส่ง ID กลับไปด้วย (เผื่อเอาไปเช็ค)
+                error_item = item.copy()
+                error_item["error"] = "No content to embed"
+                output_items.append(error_item)
             # --- YOUR EXACT LOGIC END ---
 
         except Exception as e:
-            output_items.append({
-                "error": str(e),
-                "title": item.get('title')
-            })
+            error_item = item.copy()
+            error_item["error"] = str(e)
+            output_items.append(error_item)
 
     return output_items
 
