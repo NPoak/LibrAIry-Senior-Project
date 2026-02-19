@@ -263,9 +263,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - portainer_data_librairy:/data # เก็บข้อมูลแยก ไม่ปนกับคนอื่น
+      - portainer_data_librairy:/data
     ports:
-      - 9001:9000 # เข้าผ่าน Port 9001
+      - 9001:9000 
     networks:
       - librairy-net
     healthcheck:
