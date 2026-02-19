@@ -268,4 +268,12 @@ services:
       - 9001:9000 # เข้าผ่าน Port 9001
     networks:
       - librairy-net
-
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q http://localhost:9000/api/status -O /dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
