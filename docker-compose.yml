@@ -277,7 +277,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+  infra-runner:
+    image: myoung34/github-runner:latest
+    container_name: librairy-github-runner-infra
+    restart: always
+    environment:
+      - REPO_URL=https://github.com/KaEnds/librarian-process-website
+      - RUNNER_TOKEN=AUR47W2PAVMDYGZPF3LLFKDJXLBC4
+      - RUNNER_NAME=librairy-docker-runner-infra
+      - RUNNER_LABELS=self-hosted
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root:/root
   line-runner:
     image: myoung34/github-runner:latest
     container_name: librairy-github-runner
