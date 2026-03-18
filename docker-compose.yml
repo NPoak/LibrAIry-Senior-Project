@@ -282,7 +282,7 @@ services:
     container_name: librairy-github-runner-infra
     restart: always
     environment:
-      - REPO_URL=https://github.com/KaEnds/librarian-process-website
+      - REPO_URL=https://github.com/NPoak/LibrAIry-Senior-Project
       - RUNNER_TOKEN=AUR47W2PAVMDYGZPF3LLFKDJXLBC4
       - RUNNER_NAME=librairy-docker-runner-infra
       - RUNNER_LABELS=self-hosted
