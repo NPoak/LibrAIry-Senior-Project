@@ -277,3 +277,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  line-runner:
+    image: myoung34/github-runner:latest
+    container_name: librairy-github-runner
+    restart: always
+    environment:
+      - REPO_URL=https://github.com/KaEnds/line-chat-bot-system
+      - RUNNER_TOKEN=AZJCSPZ55565WMPFXR22LUTJS5IPE
+      - RUNNER_NAME=librairy-docker-runner-line
+      - RUNNER_LABELS=self-hosted
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root:/root
+
+  web-runner:
+    image: myoung34/github-runner:latest
+    container_name: librairy-github-runner-web
+    restart: always
+    environment:
+      - REPO_URL=https://github.com/KaEnds/librarian-process-website
+      - RUNNER_TOKEN=AZJCSP7FCLKXRZQQ6QGFNA3JXLA2Q
+      - RUNNER_NAME=librairy-docker-runner-web
+      - RUNNER_LABELS=self-hosted
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root:/root
