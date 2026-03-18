@@ -1,5 +1,5 @@
 Step 1: create .env.example in cloned folder
-
+test
 - cp .env.example .env
   Step 2: start compose
   docker compose --profile gpu-nvidia up -d --build
