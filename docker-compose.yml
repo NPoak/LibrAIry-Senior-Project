@@ -283,8 +283,8 @@ services:
     restart: always
     environment:
       - REPO_URL=https://github.com/NPoak/LibrAIry-Senior-Project
-      - RUNNER_TOKEN=AUR47W2PAVMDYGZPF3LLFKDJXLBC4
-      - RUNNER_NAME=${infra_token}
+      - RUNNER_TOKEN=${infra_token}
+      - RUNNER_NAME=librairy-docker-runner-infra
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
