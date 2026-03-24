@@ -288,10 +288,11 @@ services:
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root:/root
+      - ./runners/infra:/root  
+
   line-runner:
     image: myoung34/github-runner:latest
-    container_name: librairy-github-runner
+    container_name: librairy-github-runner-line
     restart: always
     environment:
       - REPO_URL=https://github.com/KaEnds/line-chat-bot-system
@@ -300,7 +301,7 @@ services:
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root:/root
+      - ./runners/line:/root   
 
   web-runner:
     image: myoung34/github-runner:latest
@@ -313,4 +314,4 @@ services:
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root:/root
+      - ./runners/web:/root   
