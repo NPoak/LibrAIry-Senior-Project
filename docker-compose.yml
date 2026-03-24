@@ -289,7 +289,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./runners/infra:/root  
-
+      - /root/librairy-senior-project:/root/librairy-senior-project
   line-runner:
     image: myoung34/github-runner:latest
     container_name: librairy-github-runner-line
@@ -301,8 +301,8 @@ services:
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./runners/line:/root   
-
+      - ./runners/line:/root
+      - /root/line-chat-bot-system:/root/line-chat-bot-system   
   web-runner:
     image: myoung34/github-runner:latest
     container_name: librairy-github-runner-web
@@ -314,4 +314,5 @@ services:
       - RUNNER_LABELS=self-hosted
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./runners/web:/root   
+      - ./runners/web:/root
+      - /root/librarian-process-website:/root/librarian-process-website   
