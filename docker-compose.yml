@@ -277,45 +277,45 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  infra-runner:
-    image: myoung34/github-runner:latest
-    container_name: librairy-github-runner-infra
-    restart: always
-    environment:
-      - REPO_URL=https://github.com/NPoak/LibrAIry-Senior-Project
-      - RUNNER_TOKEN=${infra_token}
-      - RUNNER_NAME=librairy-docker-runner-infra
-      - RUNNER_LABELS=self-hosted
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./runners/infra:/root  
-      - /root/librairy-senior-project:/root/librairy-senior-project
-      - /root/.ssh:/root/.ssh
-  line-runner:
-    image: myoung34/github-runner:latest
-    container_name: librairy-github-runner-line
-    restart: always
-    environment:
-      - REPO_URL=https://github.com/KaEnds/line-chat-bot-system
-      - RUNNER_TOKEN=${line_token}
-      - RUNNER_NAME=librairy-docker-runner-line
-      - RUNNER_LABELS=self-hosted
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./runners/line:/root
-      - /root/line-chat-bot-system:/root/line-chat-bot-system
-      - /root/.ssh:/root/.ssh   
-  web-runner:
-    image: myoung34/github-runner:latest
-    container_name: librairy-github-runner-web
-    restart: always
-    environment:
-      - REPO_URL=https://github.com/KaEnds/librarian-process-website
-      - RUNNER_TOKEN=${web_token}
-      - RUNNER_NAME=librairy-docker-runner-web
-      - RUNNER_LABELS=self-hosted
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./runners/web:/root
-      - /root/librarian-process-website:/root/librarian-process-website
-      - /root/.ssh:/root/.ssh 
+  # infra-runner:
+  #   image: myoung34/github-runner:latest
+  #   container_name: librairy-github-runner-infra
+  #   restart: always
+  #   environment:
+  #     - REPO_URL=https://github.com/NPoak/LibrAIry-Senior-Project
+  #     - RUNNER_TOKEN=${infra_token}
+  #     - RUNNER_NAME=librairy-docker-runner-infra
+  #     - RUNNER_LABELS=self-hosted
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./runners/infra:/root  
+  #     - /root/librairy-senior-project:/root/librairy-senior-project
+  #     - /root/.ssh:/root/.ssh
+  # line-runner:
+  #   image: myoung34/github-runner:latest
+  #   container_name: librairy-github-runner-line
+  #   restart: always
+  #   environment:
+  #     - REPO_URL=https://github.com/KaEnds/line-chat-bot-system
+  #     - RUNNER_TOKEN=${line_token}
+  #     - RUNNER_NAME=librairy-docker-runner-line
+  #     - RUNNER_LABELS=self-hosted
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./runners/line:/root
+  #     - /root/line-chat-bot-system:/root/line-chat-bot-system
+  #     - /root/.ssh:/root/.ssh   
+  # web-runner:
+  #   image: myoung34/github-runner:latest
+  #   container_name: librairy-github-runner-web
+  #   restart: always
+  #   environment:
+  #     - REPO_URL=https://github.com/KaEnds/librarian-process-website
+  #     - RUNNER_TOKEN=${web_token}
+  #     - RUNNER_NAME=librairy-docker-runner-web
+  #     - RUNNER_LABELS=self-hosted
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./runners/web:/root
+  #     - /root/librarian-process-website:/root/librarian-process-website
+  #     - /root/.ssh:/root/.ssh 
