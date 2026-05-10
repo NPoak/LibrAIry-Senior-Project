@@ -211,16 +211,16 @@ services:
       - librairy-net
     ports:
       - "8000:8000"
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    # environment:
+    #   - NVIDIA_VISIBLE_DEVICES=all
+    #   - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
       interval: 30s
