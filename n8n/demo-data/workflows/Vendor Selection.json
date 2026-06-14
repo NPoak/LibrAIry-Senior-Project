@@ -1,0 +1,924 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// ดึงข้อความทั้งหมดที่ AI ตอบกลับมา\nconst responseText = items[0].json.text;\n\n// ใช้ Regex ขั้นสูงเพื่อดึงเฉพาะเนื้อหาที่อยู่ในเครื่องหมาย { } ตัวแรกและตัวสุดท้าย\nconst jsonMatch = responseText.match(/\\{[\\s\\S]*\\}/);\n\nif (jsonMatch) {\n  try {\n    // แปลงข้อความที่ตัดมาได้ให้เป็น JSON Object\n    const rawData = JSON.parse(jsonMatch[0]);\n    \n    // ดึงเฉพาะ array ของหนังสือออกมา (ตามโครงสร้างที่คุณต้องการ)\n    const finalItems = rawData.selection_summary || [];\n    \n    // ส่งข้อมูลออกไปเป็นรายการ (Array of objects) เพื่อให้ Node ถัดไปใช้งานง่าย\n    return finalItems.map(item => ({ json: item }));\n    \n  } catch (e) {\n    // ถ้าพัง ให้ส่ง Error ออกไปดูว่ามันผิดที่บรรทัดไหน\n    throw new Error(\"JSON parse failed: \" + e.message + \". Content: \" + jsonMatch[0]);\n  }\n} else {\n  // กรณีหาเครื่องหมาย { } ไม่เจอเลย\n  return [{ json: { error: \"No JSON found\", raw_text: responseText } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        16
+      ],
+      "id": "77682c2b-15cc-42a7-8b60-c04575af4c33",
+      "name": "Code in JavaScript3",
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Input: {{ JSON.stringify($items()) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a Procurement Specialist. Your task is to analyze a list of book quotations and select the best offer for each unique book. In your analysis, you must strictly identify unique items by combining the 'book_title' and its 'format' such as Physical Book or e-Book. If two items have the identical title but different formats, they must be treated as two distinct items and evaluated separately. For each unique item, select the vendor that offers the lowest 'net_price'. If the 'net_price' is tied between vendors for the exact same item and format, the tie-breaker is the 'estimated_delivery_day' where the shortest duration is preferred. The reason must be answered in Thai. Your response must be a valid raw JSON string starting with an open curly bracket and ending with a closing curly bracket, without any markdown formatting like triple backticks, conversational text, or explanations. The required JSON structure is { \"selection_summary\": [ { \"book_title\": \"string\", \"format\": \"Physical | e-Book\", \"selected_vendor\": \"string\", \"net_price\": number, \"currency\": \"string\", \"estimated_delivery_day\": \"string\", \"reason\": \"string\", \"quote_id\": \"number\", \"evaluation_id\": \"number\" } ], \"total_items_selected\": number }."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 1,
+          "delayBetweenBatches": 3000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        512,
+        16
+      ],
+      "id": "54ff2702-4dea-4697-bd1b-29496fc8b7ea",
+      "name": "Selection Agent1",
+      "executeOnce": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        512,
+        240
+      ],
+      "id": "654330c2-5f7d-4a91-8a4b-a89074d75932",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        16
+      ],
+      "id": "98c31005-02c7-47f8-b90c-0890216c9515",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM librairy.batches\nORDER BY batch_start_date DESC\nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "e945220a-7d64-4b1e-bd35-7f1020db268e",
+      "name": "get batch_id",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2467cb4-a341-4571-b6b3-8cb917604c92",
+              "name": "batch_id",
+              "value": "={{ $json.batch_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "5ed99c5d-2791-460f-9f20-b208dbfb4e8e",
+      "name": "Extract batch_id"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    vq.*, \n    pe.batch_id\nFROM librairy.vendor_quotes vq\n-- เชื่อมไปหาการประเมินเพื่อเอา batch_id\nJOIN librairy.policy_evaluations pe ON vq.evaluation_id = pe.evaluation_id\n-- กรองเฉพาะ batch_id ที่รับมาจาก Node ก่อนหน้า\nWHERE pe.batch_id = {{ $node[\"Extract batch_id\"].json[\"batch_id\"] - 1}};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        48,
+        16
+      ],
+      "id": "9df6044a-a5b9-4376-b01c-f8dae9c82388",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2467cb4-a341-4571-b6b3-8cb917604c92",
+              "name": "quote_id",
+              "value": "={{ $json.quote_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "742f12ca-5f3f-4c28-ae02-eb6186a1df42",
+      "name": "Extract quote_id"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "vendor_quotes",
+          "mode": "list",
+          "cachedResultName": "vendor_quotes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "is_best_option": true,
+            "quote_id": "={{ $json.quote_id }}"
+          },
+          "matchingColumns": [
+            "quote_id"
+          ],
+          "schema": [
+            {
+              "id": "quote_id",
+              "displayName": "quote_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "evaluation_id",
+              "displayName": "evaluation_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "book_format",
+              "displayName": "book_format",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "unit_price",
+              "displayName": "unit_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "quantity",
+              "displayName": "quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "discount_type",
+              "displayName": "discount_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "discount_value",
+              "displayName": "discount_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "net_price",
+              "displayName": "net_price",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "access_model",
+              "displayName": "access_model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "availability",
+              "displayName": "availability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "estimated_delivery_day",
+              "displayName": "estimated_delivery_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "extracted_status_type",
+              "displayName": "extracted_status_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_best_option",
+              "displayName": "is_best_option",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "extracted_at",
+              "displayName": "extracted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "extract_process_status",
+              "displayName": "extract_process_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vendor_name",
+              "displayName": "vendor_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "contact_person ",
+              "displayName": "contact_person ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vendor_email",
+              "displayName": "vendor_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "telephone_number ",
+              "displayName": "telephone_number ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "review_status",
+              "displayName": "review_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "226bbb06-c949-45c7-a1fa-0acc00929f4d",
+      "name": "Update is_best_option",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "acquisition_decisions",
+          "mode": "list",
+          "cachedResultName": "acquisition_decisions"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "evaluation_id": "={{ $('Code in JavaScript3').item.json.evaluation_id }}",
+            "selected_quote_id": "={{ $('Code in JavaScript3').item.json.quote_id }}",
+            "decision_reason": "={{ $('Code in JavaScript3').item.json.reason }}",
+            "decided_by": "AI Agent",
+            "decided_at": "={{ $now }}",
+            "approval_id": "={{ $('Create new approval').first().json.approval_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "decision_id",
+              "displayName": "decision_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "evaluation_id",
+              "displayName": "evaluation_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "selected_quote_id",
+              "displayName": "selected_quote_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "decision_reason",
+              "displayName": "decision_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "decided_by",
+              "displayName": "decided_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "decided_at",
+              "displayName": "decided_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        -192
+      ],
+      "id": "b46561af-3242-43e2-9479-554cf515f60e",
+      "name": "Insert rows in a acquisition_decision1",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "purchase_approvals",
+          "mode": "list",
+          "cachedResultName": "purchase_approvals"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "purchase_decision",
+              "displayName": "purchase_decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ip_address ",
+              "displayName": "ip_address ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approval_description",
+              "displayName": "approval_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approval_remark",
+              "displayName": "approval_remark",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "decided_at",
+              "displayName": "decided_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        16
+      ],
+      "id": "c8ed3a41-de1b-4277-90e8-69bbd2212d14",
+      "name": "Create new approval",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                4
+              ],
+              "triggerAtHour": 13,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -976,
+        256
+      ],
+      "id": "ce6bc6bf-f4a6-4f0b-9313-4c1f5a787258",
+      "name": "Schedule Trigger",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "GET"
+        ],
+        "path": "62c21077-a164-4efa-b201-4da8a523d0c0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1008,
+        496
+      ],
+      "id": "3ed9f41b-ff98-4e1a-b5ab-3f958f21118e",
+      "name": "Webhook",
+      "webhookId": "62c21077-a164-4efa-b201-4da8a523d0c0"
+    },
+    {
+      "parameters": {
+        "content": "## Triggers\n\nWorkflow นี้สามารถเริ่มทำงานได้จาก 3 ช่องทางหลัก:\n\nManual Trigger: กดเริ่มทำงานด้วยตัวเองผ่านปุ่ม 'Execute workflow'\n\nSchedule Trigger: ทำงานอัตโนมัติแบบตั้งเวลา\n\nWebhook: รองรับการเรียกใช้งานผ่าน HTTP Request (GET Method) จากระบบเว็บไซต์\n",
+        "height": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        752
+      ],
+      "id": "340cc09b-b7cf-402c-9e0c-d1c2b773e035",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Data Preparation\n\nเมื่อเริ่มทำงาน ระบบจะวิ่งไปจัดการกับฐานข้อมูล Postgres ดังนี้:\n\nCreate new approval: บันทึกข้อมูลการขออนุมัติจัดซื้อชุดใหม่ลงในตาราง librairy.purchase_approvals\n\nget batch_id: ไปดึงข้อมูลกลุ่มรายการจัดซื้อล่าสุด (batch_id) จากตาราง librairy.batches โดยเรียงจากวันที่ล่าสุด\n\nExtract batch_id: ดึงค่าเลข ID นั้นออกมาเพื่อใช้เป็นตัวแปรส่งต่อ\n\nExecute a SQL query: ค้นหาใบเสนอราคาจากสำนักพิมพ์/ซัพพลายเออร์ (librairy.vendor_quotes) โดยกรองเฉพาะ batch_id ก่อนหน้า 1 รอบ (batch_id - 1) ที่ผูกอยู่กับตารางการประเมินนโยบาย (librairy.policy_evaluations)",
+        "height": 512
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        336
+      ],
+      "id": "f3f48081-41d4-46d1-a0ae-fe1eb388f097",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## AI Decision Making\n\nข้อมูลใบเสนอราคาจากฐานข้อมูลทั้งหมดจะถูกแปลงเป็น JSON string และส่งต่อไปยังเอเจนต์คัดเลือก\n\nSelection Agent1 & Ollama Chat Model1: ใช้โมเดล gpt-oss:20b ทำหน้าที่เป็นบรรณารักษ์ ประเมินข้อมูลตามเงื่อนไข ดังนี้\n- แยกประเภทหนังสือโดยพิจารณาจาก \"ชื่อหนังสือ + รูปแบบเล่ม (Physical หรือ e-Book)\" คู่กัน\n- เลือกเจ้าที่ให้ ราคาถูกที่สุด (Lowest net_price)\n- หากราคาเท่ากัน ให้เลือกเจ้าที่ ส่งไวที่สุด (Shortest estimated_delivery_day)\n- บังคับให้ AI ตอบกลับมาเป็นโครงสร้าง JSON รูปแบบที่กำหนดเท่านั้น ห้ามมีข้อความทักทายหรือ Markdown (```) และให้ระบุเหตุผลผลการคัดเลือกเป็น ภาษาไทย",
+        "height": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        320,
+        416
+      ],
+      "id": "1aa1dffa-4f36-43a7-969e-01d8c5fbb13b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Post-Processing & Storage\n\nหลังจาก AI ส่งผลลัพธ์กลับมา ระบบจะแยกการทำงานออกเป็นขาขนานเพื่ออัปเดตข้อมูล\n\nCode in JavaScript3: ทำหน้าที่คัดแยกเฉพาะข้อความ JSON Object ออกมาจากคำตอบของ AI ด้วย Regex และกระจายรายการหนังสือออกมาเป็น Array (Item Lists) เพื่อให้ Node ถัดไปทำงานต่อได้ง่าย\n\nขาอัปเดตสถานะใบเสนอราคา (ล่าง):\n- Extract quote_id: ดึงรหัสใบเสนอราคาที่ได้รับเลือก\n- Update is_best_option: วิ่งไปอัปเดตตาราง librairy.vendor_quotes โดยทำเครื่องหมายช่อง is_best_option = true ในแถวที่ AI เลือก\n\nขาบันทึกการตัดสินใจ (บน):\n- Insert rows in a acquisition_decision1: นำรายการที่ AI เลือกไปบันทึกเพิ่มลงในตาราง librairy.acquisition_decisions โดยเก็บข้อมูลทั้งรหัสการประเมิน, ใบเสนอราคาที่เลือก, เหตุผลภาษาไทย และระบุผู้ตัดสินใจเป็น \"AI Agent\" พร้อมประทับเวลาปัจจุบัน ($now)",
+        "height": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        320
+      ],
+      "id": "e2d7813b-d669-41c8-9ba5-cd67e32b414a",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Extract quote_id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert rows in a acquisition_decision1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selection Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Selection Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Create new approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get batch_id": {
+      "main": [
+        [
+          {
+            "node": "Extract batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract batch_id": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Selection Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract quote_id": {
+      "main": [
+        [
+          {
+            "node": "Update is_best_option",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update is_best_option": {
+      "main": [
+        []
+      ]
+    },
+    "Insert rows in a acquisition_decision1": {
+      "main": [
+        []
+      ]
+    },
+    "Create new approval": {
+      "main": [
+        [
+          {
+            "node": "get batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Create new approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create new approval",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f9c00188d6f400698d5ec5063c8e4161b720199d095ce6574fdb762de0b579c"
+  }
+}

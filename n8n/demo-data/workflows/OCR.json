@@ -1,0 +1,1421 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        272
+      ],
+      "id": "ffb5589e-111a-4ae5-bc89-ced438c08935",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "'1tdvwEOaeasFDPg8PI2NY3rU5mVywoKsa' in parents and trashed = false",
+        "returnAll": true,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -624,
+        272
+      ],
+      "id": "dde98ef5-ff52-4c57-aac6-6437b6de8696",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "khud6wjOwoPBTND0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ea183080-4480-4120-bb3b-21eb01d9b29a",
+              "name": "fileUrl",
+              "value": "={{ \"https://drive.google.com/uc?export=download&id=\" + $json.id }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        128
+      ],
+      "id": "aa47f33b-4a9d-4ef4-a786-626d60851818",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://apdf.io/api/pdf/file/split",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "={{ $('Edit Fields').item.json.fileUrl }}"
+            },
+            {
+              "name": "pages",
+              "value": "n1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1040,
+        -48
+      ],
+      "id": "c8f5bbe3-833f-4d77-a36e-31c4acefd647",
+      "name": "Split PDF",
+      "retryOnFail": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "YQPZ7fRsJ3KKTmoT",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{$json.file}}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1360,
+        -48
+      ],
+      "id": "dcb5d659-e48b-43bf-a625-e87ff6e0b4db",
+      "name": "Get Splitted PDF",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Loop Over Items2').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        448,
+        448
+      ],
+      "id": "49824215-822d-41d7-ba37-e4aee2c9bb1f",
+      "name": "Download file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "khud6wjOwoPBTND0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "655eb833-25fa-49a2-9bc7-5f05044bf17a",
+              "leftValue": "={{ $json.pages }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        768,
+        64
+      ],
+      "id": "9077baf2-7007-4432-b323-a976cfcea328",
+      "name": "If page > 1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "655eb833-25fa-49a2-9bc7-5f05044bf17a",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": ".pdf",
+              "operator": {
+                "type": "string",
+                "operation": "endsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -48,
+        432
+      ],
+      "id": "fe6c0c22-4365-472f-bc55-b83c1c3d36a3",
+      "name": "If PDF"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://apdf.io/api/pdf/metadata/read",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "value": "={{$json.fileUrl}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        560,
+        128
+      ],
+      "id": "5f377438-5e6e-4e43-9b8a-b73c5e5b9c39",
+      "name": "Check page",
+      "retryOnFail": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "YQPZ7fRsJ3KKTmoT",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.opentyphoon.ai/v1/ocr",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "model",
+              "value": "typhoon-ocr"
+            },
+            {
+              "name": "task_type",
+              "value": "ocr"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1648,
+        80
+      ],
+      "id": "be1ff58b-cb7b-46a7-a5a3-6ceb29cc975d",
+      "name": "OCR1",
+      "retryOnFail": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dlDA0ymNeptsnQSI",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. ดึงข้อมูลทั้งหมดที่ส่งเข้ามา (Input)\nconst allItems = $input.all(); \n\n// 2. รวมข้อความ content จากทุก item เข้าด้วยกัน\n// ใช้เครื่องหมาย ?. เพื่อป้องกัน error กรณีโครงสร้างข้อมูลบางตัวไม่สมบูรณ์\nconst combinedText = allItems.map(item => {\n  try {\n    return item.json.results[0].message.choices[0].message.content;\n  } catch (e) {\n    return \"\"; // ถ้าหา content ไม่เจอให้เป็นค่าว่าง\n  }\n}).filter(text => text !== \"\").join('\\n\\n--- Next Page ---\\n\\n');\n\n// 3. การดึง original_file_id ให้รองรับทั้ง 2 สาย (PDF และ JPG)\n// แนะนำให้ดึงจาก Node \"Loop Over Items2\" เพราะเป็นจุดร่วมที่ส่ง ID มาแน่นอนที่สุด\nlet fileId = \"\";\ntry {\n  // พยายามดึงจาก Loop Node ล่าสุด\n  fileId = $('Loop Over Items2').item.json.id;\n} catch (e) {\n  // ถ้าหาไม่เจอ ให้ดึงจาก Search files and folders เป็นแผนสำรอง\n  fileId = $('Search files and folders').item.json.id;\n}\n\n// 4. ส่งออกเป็น item เดียว\nreturn {\n  content: combinedText,\n  original_file_id: fileId\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1904,
+        80
+      ],
+      "id": "9444ab5d-9013-448a-98c1-0dd0a039fcf3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Input quotation:\n{{ $json.content }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are a specialized Data Extraction API. Your ONLY task is to extract structured information from quotation OCR text and return a clean JSON Array of objects. CRITICAL LOGIC FOR MULTI-PAGE QUOTATIONS: IDENTIFY SUMMARY VS. DETAILS: Some quotations have a summary page listing a total count (e.g., \"6 items\") followed by detailed pages. SKIP SUMMARY LINE ITEMS: If a line item description mentions a collection of titles (e.g., \"จำนวน 6 ชื่อเรื่อง\"), DO NOT extract this as one item. You MUST find the itemized list where each book title, author, and ISBN are listed separately (usually in a table with columns like Title, Author, ISBN). VALIDATION: Every individual book found in the detailed list must be a separate object in the JSON array. STRICT OPERATIONAL RULES: NO CONVERSATION. NO CODE BLOCKS (No ```json). OUTPUT STRUCTURE: Always return a JSON Array []. DATA CLEANING: Remove commas from numeric values. Use only digits for ISBN. SCHEMA DEFINITION: title (string | null) is the book title extracted from the detailed list. authors (string | null) are the author name(s). isbn_issn (number | null) must be digits only. vendor_name (string | null) is the company name. contact_person (string | null) is the contact name. vendor_email (string | null) is the email address. telephone_number (string | null) is the contact number. book_format (string) must be \"EBOOK\" if text contains \"e-book\", \"ebook\", \"electronic\", or \"access\", otherwise \"PRINT\". unit_price (number | null) is the price for EACH individual book. quantity (number) defaults to 1. discount_type (string | null) is the type of discount applied. discount_value (number | null) is the numerical value of the discount. net_price (number | null) is the final mandatory price per item. currency (string) defaults to \"THB\". platform (string | null) is the e-book platform name. availability (string | null) is the stock or availability status. estimated_delivery_day (string | null) is the delivery timeframe(กำหนดส่งของ)."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2144,
+        80
+      ],
+      "id": "4b8510bd-19ae-4a73-a876-8ac65f617b10",
+      "name": "Get info from OCRed image1",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        2144,
+        320
+      ],
+      "id": "15222bb1-b071-4471-a795-d5bda3362217",
+      "name": "Ollama Chat Model3",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Search files and folders').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        112
+      ],
+      "id": "d7227059-645b-42ac-b40f-d087998849f5",
+      "name": "Download file2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "khud6wjOwoPBTND0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Code in JavaScript').item.json.original_file_id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1OFmswYn2MZv0qmzPwpkbQi_j11Tm2sGj",
+          "mode": "list",
+          "cachedResultName": "ใบเสนอราคา-processed",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1OFmswYn2MZv0qmzPwpkbQi_j11Tm2sGj"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4352,
+        736
+      ],
+      "id": "a59ae909-ac86-4509-96b1-182612bf54e6",
+      "name": "Move file3",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "khud6wjOwoPBTND0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -368,
+        272
+      ],
+      "id": "681d0da9-8407-48f2-84be-03ecf907cf24",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. ดึงข้อความทั้งหมดมา\nconst responseText = items[0].json.text;\n\n// 2. ใช้ Regex ที่หาจาก [ ไปจนถึง ] ตัวสุดท้ายของข้อความ\nconst jsonMatch = responseText.match(/\\[\\s*\\{[\\s\\S]*\\}\\s*\\]/);\n\nif (jsonMatch) {\n    try {\n        // ล้างช่องว่างที่อาจติดมา\n        const cleanRawData = jsonMatch[0].trim();\n        const cleanData = JSON.parse(cleanRawData);\n\n        // ส่งข้อมูลออกไปแบบแยกรายการ (Splitting items)\n        return cleanData.map(item => ({ json: item }));\n        \n    } catch (e) {\n        // ถ้ายังพัง ให้ลองส่ง error ออกมาดูว่ามันตัดข้อความมาได้แค่ไหน\n        throw new Error(\"JSON Parse Error: \" + e.message + \" | Data found: \" + jsonMatch[0].substring(0, 50) + \"...\");\n    }\n} else {\n    return [{ json: { items: [], message: \"No JSON array found in text\" } }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2576,
+        80
+      ],
+      "id": "4c07e1d8-2c3b-4a48-8224-a810a6d45fb7",
+      "name": "JSON parse",
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5565a7d9-cdd5-438e-841c-59ed75579fa4",
+              "name": "id",
+              "value": "={{ $('Loop Over Items2').first().json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "8d48a6ab-a7de-43ea-a54a-089bb7161292",
+              "name": "name",
+              "value": "={{ $('Loop Over Items2').first().json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3152,
+        496
+      ],
+      "id": "f55533d9-2079-491c-a493-90356b2083c2",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f57dbdee-a8b3-4cd4-9d49-cf871a3331f2",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ba255fa4-e7d6-4bce-8ff7-c8222d6f501f",
+              "leftValue": "={{ $json.vendor_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fc8bfe9b-62ec-42af-a5d3-ffd47da5ffdd",
+              "leftValue": "={{ $json.unit_price }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ca10ed9b-bf7a-4b3c-ab82-df11469ce973",
+              "leftValue": "={{ $json.net_price }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d388c206-f9a9-4d3d-9f5e-2e8ec3c4a5a2",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2912,
+        -16
+      ],
+      "id": "a657caf0-8488-4293-bf5f-141216b5aa00",
+      "name": "Check error"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "vendor_quotes",
+          "mode": "list",
+          "cachedResultName": "vendor_quotes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "is_best_option": false,
+            "evaluation_id": "={{ $('Execute a SQL query').item.json.evaluation_id }}",
+            "isbn_issn": "={{ $('JSON parse').item.json.isbn_issn }}",
+            "unit_price": "={{ $('JSON parse').item.json.unit_price }}",
+            "quantity": "={{ $('JSON parse').item.json.quantity }}",
+            "discount_value": "={{ $('JSON parse').item.json.discount_value }}",
+            "net_price": "={{ $('JSON parse').item.json.net_price }}",
+            "authors": "={{ $('JSON parse').item.json.authors }}",
+            "book_format": "={{ $('JSON parse').item.json.book_format }}",
+            "discount_type": "={{ $('JSON parse').item.json.discount_type }}",
+            "currency": "={{ $('JSON parse').item.json.currency }}",
+            "platform": "={{ $('JSON parse').item.json.platform }}",
+            "estimated_delivery_day": "={{ $('JSON parse').item.json.estimated_delivery_day }}",
+            "extract_process_status": "=Wait_for_review",
+            "vendor_name": "={{ $('JSON parse').item.json.vendor_name }}",
+            "contact_person ": "={{ $('JSON parse').item.json.contact_person }}",
+            "vendor_email": "={{ $('JSON parse').item.json.vendor_email }}",
+            "telephone_number ": "={{ $('JSON parse').item.json.telephone_number }}",
+            "extracted_at": "={{ $now }}",
+            "availability": "={{ $('JSON parse').item.json.availability }}",
+            "title": "={{ $('JSON parse').item.json.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "quote_id",
+              "displayName": "quote_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "evaluation_id",
+              "displayName": "evaluation_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "book_format",
+              "displayName": "book_format",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "unit_price",
+              "displayName": "unit_price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "quantity",
+              "displayName": "quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "discount_type",
+              "displayName": "discount_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "discount_value",
+              "displayName": "discount_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "net_price",
+              "displayName": "net_price",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "access_model",
+              "displayName": "access_model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "availability",
+              "displayName": "availability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estimated_delivery_day",
+              "displayName": "estimated_delivery_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "extracted_status_type",
+              "displayName": "extracted_status_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_best_option",
+              "displayName": "is_best_option",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "extracted_at",
+              "displayName": "extracted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "extract_process_status",
+              "displayName": "extract_process_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vendor_name",
+              "displayName": "vendor_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contact_person ",
+              "displayName": "contact_person ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vendor_email",
+              "displayName": "vendor_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telephone_number ",
+              "displayName": "telephone_number ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3808,
+        336
+      ],
+      "id": "77cf3d3d-bec5-40ba-b82f-196b98ec57ac",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT pe.evaluation_id \nFROM policy_evaluations pe\nJOIN book_requests br ON pe.request_id = br.request_id\nWHERE \n    (br.isbn_issn = '{{ $json.isbn_issn }}')\n    OR \n    TRIM(LOWER(br.title)) LIKE TRIM(LOWER('%{{ $json.title }}%'))\nORDER BY \n    /* ให้ความสำคัญกับ ISBN Match ก่อน (ISBN Match = 0, Title Match = 1) */\n    (CASE WHEN br.isbn_issn = '{{ $json.isbn_issn }}' THEN 0 ELSE 1 END) ASC,\n    pe.evaluated_at DESC \nLIMIT 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3152,
+        48
+      ],
+      "id": "13639b26-bf85-4267-9bb5-c344c1d2f1e9",
+      "name": "Execute a SQL query",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                4
+              ],
+              "triggerAtHour": 12,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -976,
+        512
+      ],
+      "id": "0d397b4d-3f46-4f5f-b27b-768eed4543a7",
+      "name": "Schedule Trigger",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "858a17c8-041e-47af-b14a-d75b2d6e68ae",
+              "leftValue": "={{ $json.is_really_empty }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3520,
+        240
+      ],
+      "id": "1fdab059-d547-4b5c-ae75-83274083e634",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Code in JavaScript').item.json.original_file_id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1uYIzqmKVGeEK5MTuRHnQ3C7i2SyUpftP",
+          "mode": "list",
+          "cachedResultName": "ใบเสนอราคา-error",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1uYIzqmKVGeEK5MTuRHnQ3C7i2SyUpftP"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3776,
+        576
+      ],
+      "id": "f688c5ce-15a4-4aa4-8b8a-8eebbd8ef0d4",
+      "name": "Move file",
+      "executeOnce": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "khud6wjOwoPBTND0",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  return {\n    json: {\n      is_really_empty: Object.keys(item.json).length === 0\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3344,
+        128
+      ],
+      "id": "ab4532bb-6a38-4362-b0a3-41c05ca511a2",
+      "name": "Check empty"
+    },
+    {
+      "parameters": {
+        "path": "28d2458c-ce93-49b2-aed7-6ad820411bfa",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -976,
+        48
+      ],
+      "id": "f83d3add-58d2-48b4-95cf-5af87dd65f1b",
+      "name": "Webhook",
+      "webhookId": "28d2458c-ce93-49b2-aed7-6ad820411bfa"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://librarian-process-web.librairy.work/api/workflow-notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"SUCCESS\",\n  \"workflowName\": \"Extract OCR Workflow\",\n  \"executionId\": \"{{ $execution.id }}\",\n  \"message\": \"Extract OCR สำเร็จ\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -64,
+        160
+      ],
+      "id": "37a3107a-c664-4e2f-8737-4d403bb7122f",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://librarian-process-web.librairy.work/api/workflow-notifications",
+        "sendBody": true,
+        "specifyBody": "=json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n  \"status\": \"FAILED\",\n  \"workflowName\": \"Extract OCR Workflow\",\n  \"executionId\": \"{{ $execution.id }}\",\n  \"message\": \"Extract OCR ไม่สำเร็จ\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3968,
+        576
+      ],
+      "id": "e74960dc-62cf-49fe-b95b-faad3f18f6cb",
+      "name": "Website Alert"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger & File Discovery\n\nTrigger 3 ช่องทาง: รองรับทั้งการกดรันเอง (Manual), ตั้งเวลาทำงานอัตโนมัติทุกสัปดาห์  หรือรับสัญญาณจากเว็บไซต์ (Webhook)\n\nSearch files and folders: วิ่งไปดึงไฟล์จาก Google Drive ในโฟลเดอร์เฉพาะ (ที่เก็บใบเสนอราคาเข้าใหม่)\n\nLoop Over Items2: ทำการสลับตัวมาวนลูปประมวลผลไฟล์ทีละไฟล์\n\n",
+        "height": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        1024
+      ],
+      "id": "5bc79dc6-0635-4149-80ba-a49812e558f7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## File Classification & Splitting\n\nIf PDF: ตรวจสอบว่าไฟล์ที่ดึงมาใช่นามสกุล .pdf หรือไม่\n\nCheck page & If page > 1: ส่งไฟล์ไปเช็กจำนวนหน้าผ่าน API ของ apdf.io หากพบว่าเป็น PDF หลายหน้า จะถูกส่งเข้า Node Split PDF เพื่อหั่นแบ่งหน้ารวมถึงดาวน์โหลดตัวที่สับย่อยออกมา (Get Splitted PDF) เพื่อให้พร้อมสำหรับการทำ OCR\n",
+        "height": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        1072
+      ],
+      "id": "0dae0542-3956-43ff-96f0-13e71c328ce1",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## OCR & AI Extraction\n\nOCR1 (Typhoon OCR): ส่งไฟล์ (รูปภาพหรือ PDF ที่จัดเตรียมไว้) ไปแปลงเป็น Text ภาษาไทย/อังกฤษผ่านโมเดล typhoon-ocr ของ OpenTyphoon\n\nCode in JavaScript: นำข้อความที่ OCR สำเร็จในแต่ละหน้ามารวมกัน (Concatenate) พร้อมเก็บ original_file_id ไว้อ้างอิง\n\nGet info from OCRed image1 (LangChain + Ollama): * ใช้ Prompt ควบคุม AI ให้ทำตัวเป็น Data Extraction API คอยสกัดข้อมูลอกมาเป็น JSON Array\n",
+        "height": 416,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2144,
+        1056
+      ],
+      "id": "94b09d49-9b5c-4da4-8dab-c23c9dc48a81",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Validation & Database Match\n\nJSON parse: แปลง Text JSON ที่ AI ตอบกลับมาให้กลายเป็น Object ข้อมูลของ n8n\n\nCheck error: คัดกรองข้อมูลเบื้องต้น ถ้าตัวแปรสำคัญอย่างชื่อหนังสือ, ชื่อสำนักพิมพ์ (Vendor) หรือราคาว่างเปล่า จะถือว่ามีข้อผิดพลาด\n\nExecute a SQL query (Postgres): นำข้อมูลหนังสือที่แกะได้ไป Query ในฐานข้อมูล policy_evaluations และ book_requests\n\nLogic การค้นหา: ค้นหาด้วย isbn_issn ก่อน หากไม่เจอจะใช้ title (ชื่อหนังสือ) ในการค้นหาแทน โดยเรียงลำดับความสำคัญให้จุดที่สะกดตรงกับ ISBN ขึ้นมาก่อน",
+        "height": 480,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3168,
+        1024
+      ],
+      "id": "3caf82dc-c649-4abb-937b-11c7a42ff95f",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Database Insertion & File Archive\nInsert rows in a table: นำข้อมูลใบเสนอราคาที่คัดกรองและจับคู่ตารางเรียบร้อยแล้ว บันทึกลงตาราง vendor_quotes ใน Database โดยจะเซ็ตสถานะเป็น Wait_for_review เพื่อให้บรรณารักษ์หรือผู้เชี่ยวชาญมาตรวจทานอีกครั้ง\n\nการย้ายโฟลเดอร์ (File Routing):\nกรณีสำเร็จ (Success): ย้ายไฟล์ใบเสนอราคาต้นทางบน Google Drive ไปไว้ที่โฟลเดอร์ ใบเสนอราคา-processed\n\nกรณีผิดพลาด (Error/Empty): ย้ายไฟล์ไปไว้ที่โฟลเดอร์ ใบเสนอราคา-error เพื่อให้เจ้าหน้าที่มาตรวจสอบแมนนวล",
+        "height": 400,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3824,
+        1024
+      ],
+      "id": "6b1b8a20-6012-41bb-ae53-ff0531a3c9a2",
+      "name": "Sticky Note4"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Check page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split PDF": {
+      "main": [
+        [
+          {
+            "node": "Get Splitted PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Splitted PDF": {
+      "main": [
+        [
+          {
+            "node": "OCR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file1": {
+      "main": [
+        [
+          {
+            "node": "OCR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If page > 1": {
+      "main": [
+        [
+          {
+            "node": "Split PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If PDF": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check page": {
+      "main": [
+        [
+          {
+            "node": "If page > 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OCR1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get info from OCRed image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get info from OCRed image1": {
+      "main": [
+        [
+          {
+            "node": "JSON parse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Get info from OCRed image1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file2": {
+      "main": [
+        [
+          {
+            "node": "OCR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON parse": {
+      "main": [
+        [
+          {
+            "node": "Check error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check error": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Move file3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Check empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move file": {
+      "main": [
+        [
+          {
+            "node": "Website Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check empty": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Alert": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f9c00188d6f400698d5ec5063c8e4161b720199d095ce6574fdb762de0b579c"
+  }
+}
