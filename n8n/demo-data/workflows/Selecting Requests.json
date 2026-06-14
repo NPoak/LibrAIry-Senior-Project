@@ -1,0 +1,1915 @@
+{
+  "name": "🚧Selecting Requests",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -48
+      ],
+      "id": "57a3aaa5-14a7-4f3a-b134-bdf7852da604",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 12,
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        128
+      ],
+      "id": "8ebf81fd-825c-4dc7-b740-550cc4b131e7",
+      "name": "Schedule Trigger1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM librairy.batches\nWHERE \n  batch_start_date::date >= (DATE_TRUNC('week', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Bangkok') - INTERVAL '1 week')::date\n  AND \n  -- ใช้ <= และตรวจสอบถึงวันจันทร์นี้\n  batch_end_date::date <= (DATE_TRUNC('week', CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Bangkok'))::date;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -112,
+        128
+      ],
+      "id": "d047f3ab-a6f9-45dd-b504-980b5d5c8519",
+      "name": "get batch_id",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT book_r.*\nFROM librairy.book_requests book_r\nJOIN librairy.batch_requests batch_r ON book_r.request_id = batch_r.request_id\nWHERE batch_r.batch_id = {{ $json.batch_id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        128
+      ],
+      "id": "563ed9aa-9dd3-4288-bad3-f11ee3848773",
+      "name": "get book_requests",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "batch_requests",
+          "mode": "list",
+          "cachedResultName": "batch_requests"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "batch_id": "={{ $('Extract batch_id').item.json.batch_id }}",
+            "request_id": "={{ $('check if batch_requests already created with normal weekly batch_id').item.json.request_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "batch_id",
+              "displayName": "batch_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        192
+      ],
+      "id": "994b466a-79fb-4860-8a47-ee80dae6bf90",
+      "name": "Insert rows in batch_requests table",
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2467cb4-a341-4571-b6b3-8cb917604c92",
+              "name": "batch_id",
+              "value": "={{ $json.batch_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        112,
+        128
+      ],
+      "id": "cd914523-7ab5-4ffe-b033-13bf1e052cd6",
+      "name": "Extract batch_id"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM librairy.batch_requests\nWHERE batch_id = {{ $('Extract batch_id').item.json.batch_id }} AND request_id = {{ $('get book_requests').item.json.request_id }} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        128
+      ],
+      "id": "0e5fe053-50c7-4134-b315-1c93f0800780",
+      "name": "check if batch_requests already created with normal weekly batch_id",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a638ff4-f2f4-4cc8-86bf-719651f634b6",
+              "leftValue": "={{ $json.batch_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "7f924a88-3263-4b21-a783-e3899712c670",
+              "leftValue": "={{ $json.request_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1424,
+        128
+      ],
+      "id": "1d15d494-196e-4d4d-8f53-b00229fb885a",
+      "name": "If batch_requests not created yet"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_requests",
+          "mode": "list",
+          "cachedResultName": "book_requests"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "status",
+              "value": "PENDING"
+            },
+            {
+              "column": "requested_at",
+              "condition": ">=",
+              "value": "={{ $now.setZone('+07').startOf('week').minus({ weeks: 1 }) }}"
+            },
+            {
+              "column": "requested_at",
+              "condition": "<",
+              "value": "={{ $now.setZone('+07').startOf('week') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        976,
+        128
+      ],
+      "id": "7abf82d7-f19c-4b5a-b800-efd8355b3646",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH \n-- 1. เตรียมข้อมูล Vector\nInputVectors AS (\n    SELECT *\n    FROM json_to_recordset('{{ $json.vectors_json }}') \n    AS x(request_id int, vector_text vector(384))\n),\n\n-- 2. ดึงรายการ Request (ทำ DISTINCT เผื่อไว้)\nRequestList AS (\n    SELECT DISTINCT\n        br.request_id, b.batch_id, br.title, br.authors, br.isbn_issn, \n        br.publisher, br.publication_year, br.requester_role, \n        br.faculty_id, br.department_id, br.request_reason_category, \n        br.specify_reason, br.branch, br.request_count, br.remark, inp.vector_text \n    FROM librairy.batch_requests b\n    JOIN librairy.book_requests br ON b.request_id = br.request_id\n    JOIN InputVectors inp ON br.request_id = inp.request_id\n    WHERE b.batch_id = {{ $json.batch_id }}\n),\n\n-- 3. บีบข้อมูลจากตารางห้องสมุด (test_bib3) ให้เหลือ 1 record ต่อ 1 ISBN\n-- โดยเลือกเอาเล่มที่มีชื่อ (title) ยาวที่สุดหรืออัปเดตล่าสุดมา\nUniqueBib AS (\n    SELECT DISTINCT ON (isbn) *\n    FROM librairy.test_bib3\n    ORDER BY isbn, LENGTH(title) DESC -- สมมติว่าชื่อที่ยาวกว่าคือข้อมูลที่สมบูรณ์กว่า\n),\n\n-- 4. บีบข้อมูลจาก Cache ให้เหลือ 1 record ต่อ 1 ISBN\nUniqueCache AS (\n    SELECT DISTINCT ON (isbn_issn) *\n    FROM librairy.book_api_cache\n    ORDER BY isbn_issn, last_fetched_at DESC\n),\n\n-- 5. คำนวณจำนวนเล่มแยกต่างหาก\nInventoryCounts AS (\n    SELECT isbn, branchid, COUNT(item_id) as copy_count\n    FROM librairy.test_bib3 tb\n    JOIN librairy.bib_item bi ON tb.bibid = bi.bib_id\n    GROUP BY isbn, branchid\n)\n\n-- 6. รวมผลลัพธ์\nSELECT json_agg(\n    json_build_object(\n        'request_id', r.request_id,\n        'batch_id',   r.batch_id,\n        'book_info', json_build_object(\n            'title',       COALESCE(tb.title, bac.title, r.title),\n            'isbn',        r.isbn_issn,\n            'language',    COALESCE(bac.year_of_publication, tb.lang, 'Unknown'),\n            'year',        COALESCE(CAST(r.publication_year AS text), bac.year_of_publication, tb.year_of_publication),\n            'categories',  COALESCE(bac.subject, tb.subject, ''),\n            'author',      COALESCE(r.authors, bac.author, tb.author, ''),\n            'publisher',   COALESCE(r.publisher, bac.publisher, tb.publisher, '')\n        ),\n        'library_status', json_build_object(\n            'current_copies', COALESCE(inv.copy_count, 0),\n            'checked_branch', r.branch,\n            'is_duplicate',   CASE WHEN COALESCE(inv.copy_count, 0) > 0 THEN true ELSE false END\n        ),\n        'request_context', json_build_object(\n            'requester_role',       r.requester_role,\n            'requester_faculty',    f.faculty_name_en, \n            'requester_department', d.department_name_en,\n            'reason',               r.request_reason_category,\n            'specify reason',       r.specify_reason,\n            'demand_count',         r.request_count\n        ),\n        'university_context', json_build_object(\n            'faculties',   rec_fac.names,\n            'departments', rec_dept.names,\n            'university_remark', COALESCE(r.remark, 'No additional university remark')\n        )\n    )\n) AS result_json\nFROM RequestList r\nLEFT JOIN UniqueBib tb ON r.isbn_issn = tb.isbn AND r.branch = tb.branchid\nLEFT JOIN UniqueCache bac ON r.isbn_issn = bac.isbn_issn\nLEFT JOIN InventoryCounts inv ON r.isbn_issn = inv.isbn AND r.branch = inv.branchid\nLEFT JOIN librairy.faculties f ON r.faculty_id = f.faculty_id\nLEFT JOIN librairy.departments d ON r.department_id = d.department_id\nCROSS JOIN LATERAL (\n    SELECT json_agg(fname) as names FROM (\n        SELECT faculty_name_en as fname FROM librairy.faculties ORDER BY vector <=> r.vector_text ASC LIMIT 3\n    ) sub_f\n) rec_fac\nCROSS JOIN LATERAL (\n    SELECT json_agg(dname) as names FROM (\n        SELECT department_name_en as dname FROM librairy.departments ORDER BY vector::vector(384) <=> r.vector_text ASC LIMIT 5\n    ) sub_d\n) rec_dept;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2768,
+        128
+      ],
+      "id": "e1ee10fb-ad1c-4b0a-84a0-6e61b69ef0f5",
+      "name": "get book_requests from batch_requests",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## get book_requests from batch_requests\n🔍 อธิบายการทำงาน:\n1.**FROM librairy.batch_requests AS b**: เริ่มต้นที่ตาราง \"ตัวเชื่อม\" (Junction Table) ที่เก็บความสัมพันธ์ว่า Batch นี้มี Request ID อะไรบ้าง\n\n2.**JOIN librairy.book_requests AS br ON b.request_id = br.request_id**: นำตารางตัวเชื่อมไป \"จอย\" (รวม) กับตารางข้อมูลหนังสือจริงๆ โดยใช้ **request_id** เป็นตัวเชื่อม เพื่อให้เราได้ข้อมูลรายละเอียดหนังสือ (เช่น ชื่อหนังสือ, ผู้แต่ง) มาด้วย\n\n3.**WHERE b.batch_id = {{ $json.batch_id }}**: กรองเฉพาะรายการที่อยู่ใน Batch ID ที่เราต้องการ (รับค่ามาจาก n8n)\n\n4.**SELECT br.***: เลือกดึงข้อมูล ทุกคอลัมน์จากตาราง book_requests เท่านั้น",
+        "height": 368,
+        "width": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2352,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "b206093b-cf74-471b-b242-2c2706cbb989",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "/* Node 1: ดึงข้อมูลเพื่อส่งไป Embed */\nSELECT \n    br.request_id,  -- สำคัญมาก! ต้องดึง ID มาด้วยเพื่อใช้จับคู่ขากลับ\n    br.title, \n    br.specify_reason,\n    b.batch_id\nFROM librairy.batch_requests b\nJOIN librairy.book_requests br ON b.request_id = br.request_id\nWHERE b.batch_id = {{ $('Extract batch_id').item.json.batch_id }};",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2096,
+        128
+      ],
+      "id": "09a42675-d6aa-4c25-9b03-cbc7333c0614",
+      "name": "get title and reason for vector search",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-worker:8000/bookembed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "reason",
+              "value": "={{ $json.specify_reason }}"
+            },
+            {
+              "name": "request_id",
+              "value": "={{ $json.request_id }}"
+            },
+            {
+              "name": "batch_id",
+              "value": "={{ $json.batch_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2320,
+        128
+      ],
+      "id": "4dd8e9d5-3145-4798-ae84-785d28cfc7cc",
+      "name": "Vector Embedding title and reason"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ใช้ $input.all() แทน items\nconst inputItems = $input.all();\n\n// 1. วนลูปเก็บ request_id และ vector ของทุกเล่มมาใส่ Array\nconst vectorMap = inputItems.map(item => {\n  return {\n    \"request_id\": item.json.request_id,\n    \"vector_text\": item.json.vector_text\n  }\n});\n\n// 2. ส่งออกไปเป็น 1 Item (ที่มี JSON String ก้อนใหญ่)\nreturn {\n  json: {\n    // ดึง batch_id จากตัวแรก\n    batch_id: inputItems[0].json.batch_id,\n    \n    // แปลง Array ให้เป็น String เพื่อส่งให้ SQL\n    vectors_json: JSON.stringify(vectorMap)\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        128
+      ],
+      "id": "f51444c7-a60d-4862-b890-7e9c97cfb960",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "content": "## get book_requests from batch_requests latest\n\nQuery นี้แบ่งการทำงานออกเป็น 5 ส่วนหลัก ดังนี้ครับ:\n\n1. ส่วนรับข้อมูลจาก n8n (InputVectors)\nSQL\n\nInputVectors AS (\n    SELECT *\n    FROM json_to_recordset('{{ $json.vectors_json }}') \n    AS x(request_id int, vector_text vector(384))\n),\nหน้าที่: แปลงก้อน JSON String ขนาดใหญ่ที่ส่งมาจาก Code Node ให้กลายเป็น \"ตารางชั่วคราว\" (Virtual Table)\n\nทำไมต้องทำ: เพื่อให้ SQL มองเห็นข้อมูล Vector ของหนังสือ 30 เล่ม แยกเป็นบรรทัดๆ (Rows) พร้อมที่จะเอาไป Join กับข้อมูลจริงใน Database\n\n2. ส่วนเตรียมข้อมูลหนังสือ (RequestList)\nSQL\n\nRequestList AS (\n    SELECT ..., inp.vector_text \n    FROM librairy.batch_requests b\n    JOIN InputVectors inp ON br.request_id = inp.request_id\n    WHERE b.batch_id = {{ $json.batch_id }}\n),\nหน้าที่: ดึงข้อมูลรายละเอียดของหนังสือ (ชื่อ, ผู้แต่ง, สาขาที่ขอ) จาก Database\n\nจุดสำคัญ: มีการ JOIN กับ InputVectors (จากข้อ 1) เพื่อเอา Vector มาแปะติดกับหนังสือเล่มที่ถูกต้อง (โดยใช้ request_id เป็นกุญแจจับคู่)\n\n3. ส่วนเช็คสต็อกห้องสมุด (InventoryCounts)\nSQL\n\nInventoryCounts AS (\n    SELECT r.request_id, COUNT(bi.item_id) as copy_count\n    ...\n    GROUP BY r.request_id\n),\nหน้าที่: นับว่าหนังสือเล่มนี้ (ISBN นี้) มีอยู่ในห้องสมุดสาขา (Branch) ที่ผู้ใช้ขอมาหรือไม่\n\nLogic: ถ้ามี -> is_duplicate = true (อาจจะไม่ต้องซื้อเพิ่ม)\n\n4. ส่วนสมองกล AI (CROSS JOIN LATERAL) (หัวใจสำคัญ ❤️)\nSQL\n\n-- Search คณะ\nCROSS JOIN LATERAL (\n    SELECT json_agg(fname) ...\n    FROM librairy.faculties\n    WHERE (vector <=> r.vector_text) < 0.65 -- กรองความเหมือน (Distance < 0.65)\n    ORDER BY vector <=> r.vector_text ASC\n    LIMIT 3\n) rec_fac\n\n-- Search ภาควิชา\nCROSS JOIN LATERAL ( ... ) rec_dept\nหน้าที่: ทำ Semantic Search หาคณะและภาควิชาที่เกี่ยวข้อง\n\nความพิเศษของ LATERAL:\n\nมันทำงานเหมือน For-Loop ในการเขียนโปรแกรม\n\n\"สำหรับหนังสือแต่ละบรรทัด (r)\" -> ให้เอา Vector ของบรรทัดนั้น (r.vector_text) วิ่งไปเทียบกับตารางคณะทั้งหมด\n\nผลลัพธ์ที่ได้ของแต่ละบรรทัด จึงเป็น Context ของใครของมัน ไม่ปะปนกัน (หนังสือฟิสิกส์ได้คณะวิทย์, หนังสือบัญชีได้คณะบริหาร)\n\n5. ส่วนรวมร่างและจัด Format (SELECT json_agg)\nSQL\n\nSELECT json_agg(\n    json_build_object(\n        'book_info', ...,\n        'university_context', ...\n    )\n)\nหน้าที่: กวาดข้อมูลจากทุกส่วน (รายละเอียดหนังสือ + สต็อก + ผล AI) มารวมกัน\n\nFormat: จัดหน้าตาเป็น JSON สวยงาม ตามโครงสร้างที่คุณต้องการ เพื่อให้ Node ถัดไปใน n8n หรือ Frontend ใช้งานได้ทันที\n\n💡 สรุป Logic การกรองความแม่นยำ (Threshold)\nในส่วน LATERAL JOIN คุณมีการตั้งค่าความแม่นยำไว้ดังนี้:\n\nคณะ (faculties):\n\nWHERE (vector <=> r.vector_text) < 0.65\n\nแปลว่า: เอาเฉพาะคณะที่มี ความเหมือนมากกว่า 35% (ยิ่ง Distance น้อย ยิ่งเหมือนมาก)\n\nภาควิชา (departments):\n\nWHERE (vector <=> r.vector_text) < 0.75\n\nแปลว่า: เอาเฉพาะภาควิชาที่มี ความเหมือนมากกว่า 25% (ตั้งไว้หลวมกว่าคณะ เพราะภาควิชามีความเฉพาะเจาะจงมากกว่า อาจจะหาตรงเป๊ะๆ ยากกว่า)\n\nDiagram การทำงาน (Data Flow)\nCode Node มัดรวม Vector ใส่กล่อง -> ส่งให้ SQL\n\nSQL แกะกล่อง (InputVectors) -> แปะ Vector เข้ากับหนังสือ (RequestList)\n\nLoop (LATERAL) -> เอา Vector หนังสือ A ไปหาคณะ -> เอา Vector หนังสือ B ไปหาคณะ\n\nFinal -> รวมทุกอย่างส่งออกมาเป็น Result JSON",
+        "height": 1888,
+        "width": 896
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2352,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "de0cc856-1eec-463f-87fe-ffc50ef7c7f9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Split Requests').item.json }}",
+        "options": {
+          "systemMessage": "=# Role\nChief Librarian AI. Your ONLY task is to evaluate book requests and output a valid JSON.\n\n# Policies\n{{ $('Select active policies').first().json.policies_bundle.map(p => `\"${p.policy_code}\": \"${p.description}. ${p.prompt_instruction}\"`).join('\\n') }}\n\n# Evaluation Rules\n1. Evaluate each policy strictly using ONLY the provided context data.\n2. POL-04 Calculation: Current year is {{ $now.year }}. Age = (Current Year - Publication Year). Score 10 if Age <= 5. If Age > 5, score based on \"essential\" status.\n3. POL-09 Strict Logic: \n   - If Language is Foreign AND current_copies > 0 -> Score 0 (Strictly).\n   - If Language is Thai AND current_copies >= 5 -> Score 0.\n4. Calculation: net_score = Sum of all scores in score_breakdown.\n\n# Output Format Constraint\n- You must output ONLY a raw JSON object.\n- NO markdown formatting (NO ```json).\n- NO conversational filler.\n- **IMPORTANT: All \"reason\" and \"summary_reason\" values MUST be written in THAI language.**\n- The response MUST start with '{' and end with '}'.\n\n# Required JSON Structure\n{\n  \"request_id\": 0,\n  \"batch_id\": 0,\n  \"score_breakdown\": {\n{{ $('Select active policies').first().json.policies_bundle.map(p => `    \"${p.policy_code}\": { \"score\": 0, \"reason\": \"เหตุผลสั้นๆ เป็นภาษาไทย\" }`).join(',\\n') }}\n  },\n  \"net_score\": 0,\n  \"final_decision\": \"Approve/Reject\",\n  \"summary_reason\": \"สรุปเหตุผลการตัดสินใจเป็นภาษาไทย\"\n}\n\n### CRITICAL FINAL INSTRUCTION:\nOutput ONLY the JSON object. All text descriptions (reason, summary_reason) MUST be in THAI. Do not explain. Failure to provide raw JSON will break the system. START WITH '{'."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3216,
+        128
+      ],
+      "id": "f220e888-105f-4bb9-93e8-d440571ff7a1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {
+          "numPredict": 4000,
+          "format": "json"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        3184,
+        352
+      ],
+      "id": "18bb5fe0-59a9-442e-adbe-449c7ec17754",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        208,
+        1296
+      ],
+      "id": "fbb0f457-704b-49f8-9917-affb7f718f9b",
+      "name": "Ollama Chat Model2",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"request_id\": 1,\n  \"batch_id\": 4,\n  \"score_breakdown\": {\n    \"POLICY_CODE\": { \"score\": 10, \"reason\": \"reason text\" }\n  },\n  \"net_score\": 0,\n  \"final_decision\": \"Approve\",\n  \"summary_reason\": \"summary text\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        1472
+      ],
+      "id": "cd0321e1-9656-4c20-a6f3-e0dcbe63a466",
+      "name": "Structured Output Parser3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=result_json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        128
+      ],
+      "id": "85ae0eb6-f511-491f-b4e7-110af7e39fcb",
+      "name": "Split Requests"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT json_agg(p) as policies_bundle\nFROM (\n    SELECT policy_code, description, prompt_instruction\n    FROM librairy.policies\n    WHERE is_active = true\n    ORDER BY policy_id ASC\n) p;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1872,
+        128
+      ],
+      "id": "c96996d1-3696-4899-9616-60fec11f25d3",
+      "name": "Select active policies",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\n{instructions}\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Please only respond with an answer that satisfies the constraints laid out in the Instructions:"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        512,
+        1328
+      ],
+      "id": "d2ef6ad1-0aa1-4075-82d3-ed7a34856791",
+      "name": "Auto-fixing Output Parser",
+      "notesInFlow": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Split Requests').item.json }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=# Role\nYou are the Chief Librarian AI. Evaluate the book request based on the provided JSON Context and the following 9 Policies.\n\n# Policies\n{{ $('Select active policies').all().map(item => `\"${item.json.policy_code}\"\\t\"${item.json.description}. ${item.json.prompt_instruction}\"`).join('\\n') }}\n\n# Evaluation Context\n- see from JSON object in user message \n\n# Instructions\n1. Evaluate each policy strictly based on the context data.\n2. For POL-04: Calculate the age of the book. Must be <= 5 years unless justified.\n3. For POL-09: \n   - If Language is Foreign and current_copies > 0 -> Score 0 (Strictly).\n   - If Language is Thai and current_copies >= 5 -> Score 0 (Unless reason is strong).\n4. For net score use Calculator1.\n5. Output Format: The keys in score_breakdown must exactly match the policy_code list provided in the # Policies section.\"\n\n# Required Output Structure Example \n{\n  \"score_breakdown\": {\n    \"POL-01\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-02\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-03\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-04\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-05\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-06\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-07\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-08\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-09\": { \"score\": 10, \"reason\": \"...\" }\n  },\n  \"net_score\": 90,\n  \"final_decision\": \"Approve\",\n  \"summary_reason\": \"Summary...\"\n}\n\n# IMPORTANT INSTRUCTIONS\n- Use ONLY the policy codes from the # Policies section.\n- Output ONLY valid JSON. \n- DO NOT explain your thought process."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -304,
+        1232
+      ],
+      "id": "7416a754-daa5-47a0-90a9-8ce7ec74d990",
+      "name": "Basic LLM Chain",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        1488
+      ],
+      "id": "57cd079a-7e0a-41b8-b579-a156e615f14d",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"score_breakdown\": {\n    \"POL-01\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-02\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-03\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-04\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-05\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-06\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-07\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-08\": { \"score\": 10, \"reason\": \"...\" },\n    \"POL-09\": { \"score\": 10, \"reason\": \"...\" }\n  },\n  \"net_score\": 90,\n  \"final_decision\": \"Approve\",\n  \"summary_reason\": \"Summary...\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        1696
+      ],
+      "id": "cbf27082-5a84-43e6-8541-d62337bf3671",
+      "name": "Structured Output Parser",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\n{instructions}\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Please only respond with an answer that satisfies the constraints laid out in the Instructions:"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        1488
+      ],
+      "id": "ed3a05b2-7b7b-4e33-bd39-19d86a684cbc",
+      "name": "Auto-fixing Output Parser1",
+      "notesInFlow": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:20b",
+        "options": {
+          "temperature": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        1696
+      ],
+      "id": "ab76c7a6-9466-4539-8d19-f9d0d65e882c",
+      "name": "Ollama Chat Model3",
+      "credentials": {
+        "ollamaApi": {
+          "id": "oP05Vj9KBEHsCcgJ",
+          "name": "Ollama account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all();\nreturn input.map(item => {\n  try {\n    const rawText = item.json.output;\n    // ใช้ Regex ค้นหาจุดเริ่มต้น { และจุดสิ้นสุด } ที่อยู่นอกสุด\n    const jsonMatch = rawText.match(/\\{[\\s\\S]*\\}/);\n    \n    if (jsonMatch) {\n      // แปลงข้อความที่ตัดมาได้ให้เป็น Object จริงๆ\n      const cleanJson = JSON.parse(jsonMatch[0]);\n      return { json: cleanJson };\n    }\n    throw new Error(\"No JSON found in output\");\n  } catch (error) {\n    // กรณีที่ AI พ่นอะไรที่พังจริงๆ ให้ส่งค่า Raw ไปตรวจสอบ\n    return {\n      json: { \n        error: \"Parse Error\", \n        raw_output: item.json.output \n      }\n    };\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3552,
+        128
+      ],
+      "id": "a5e001b9-772c-4c6d-b6c3-88ab178551a8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "policy_evaluations",
+          "mode": "list",
+          "cachedResultName": "policy_evaluations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "passed_selection": "={{ $json.final_decision === 'Approve' ? true : false }}",
+            "net_score": "={{ $json.net_score || $json.score_breakdown.net_score }}",
+            "batch_id": "={{ $json.batch_id }}",
+            "request_id": "={{ $json.request_id }}",
+            "score_breakdown": "={{ $json.score_breakdown }}",
+            "reasoning": "={{$json.summary_reason || $json.score_breakdown.summary_reason }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "evaluation_id",
+              "displayName": "evaluation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "batch_id",
+              "displayName": "batch_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "passed_selection",
+              "displayName": "passed_selection",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "score_breakdown",
+              "displayName": "score_breakdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "net_score",
+              "displayName": "net_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reasoning",
+              "displayName": "reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "evaluated_at",
+              "displayName": "evaluated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4400,
+        160
+      ],
+      "id": "2bdd58d0-bcf2-4c9e-b46d-8e4707564f51",
+      "name": "Insert new requests evaluation",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "ต้องเพิ่ม posgres update request status เป็น selecting ด้วย ตอนจยจะ update เป็น VENDOR_SELECTING "
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        944,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "7f3fa083-be5b-4707-a97d-19df0b6fd4d7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## การ get batch\n\nbatch ที่ get มาจะเป็น batch ของอาทิตย์ที่แล้วเพราะเราจะเริ่มประมวลผลหนังสือที่ขอมาในอาทิตย์ที่แล้ว"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        240,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "625e357a-0a3c-43d7-bd3f-dc8ec009e2d1",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d34f53a4-8bd0-4c31-b71f-d3154f99ba2b",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "={{ $json.error }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3792,
+        128
+      ],
+      "id": "43e6e50b-3b85-4e65-93d8-226263d12342",
+      "name": "If error occurs in JSON outputs"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1b47c4f4-b40e-4a5a-9f2b-909a0faf795f",
+              "leftValue": "={{ $node[\"AI Agent\"].runIndex }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4288,
+        -192
+      ],
+      "id": "01a4ac9f-9d82-4f18-b88f-7af2604237cb",
+      "name": "If retry 3 times"
+    },
+    {
+      "parameters": {
+        "errorMessage": "failed 3 times"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        4752,
+        -176
+      ],
+      "id": "9c761444-e25f-4d77-9ced-5907ff175ed2",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "request_id"
+            },
+            {
+              "fieldToAggregate": "batch_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        5040,
+        160
+      ],
+      "id": "41f0a001-1308-456e-b09b-d7255beb3ca7",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.evaluationTrigger",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        304
+      ],
+      "id": "c78789bc-b266-4541-95d4-32d410b67459",
+      "name": "When fetching a dataset row",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ec1113dc-bed6-49c7-b5e8-1aae581a00f5",
+              "leftValue": "={{ $json.batch_id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        304,
+        144
+      ],
+      "id": "0192577e-ceb7-4dcd-850b-9d1dbf67e3b7",
+      "name": "If",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sendTo": "oak0809@gmail.com",
+        "subject": "[LibrAIry] แจ้งเตือน: ไม่พบข้อมูล Batch ประจำสัปดาห์",
+        "message": "=รายละเอียด:\nระบบอัตโนมัติไม่สามารถค้นหาข้อมูลในตาราง librairy.batches สำหรับรอบการประมวลผลปัจจุบันได้\n\nเวลาที่ตรวจสอบ: {{ $now.format('yyyy-MM-dd HH:mm:ss') }} (Asia/Bangkok)\n\nสถานะ: ค้นหาไม่สำเร็จ (No Data Found)\n\nข้อแนะนำ:\nกรุณาตรวจสอบการตั้งค่า Timezone ใน Docker หรือตรวจสอบว่ามีการสร้าง Batch สำหรับสัปดาห์นี้ในฐานข้อมูล Postgres แล้วหรือไม่",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        528,
+        288
+      ],
+      "id": "7a90e72c-8961-44e5-9a8f-a8d7f99853ae",
+      "name": "get batch failed",
+      "webhookId": "244d0b07-d608-4fe4-a3a1-f624d234ec5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GFGepZajjoBJJ1zq",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Batch Processing ID Not Found"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        752,
+        288
+      ],
+      "id": "ca88d443-7984-4ab9-8379-88dd3ccc4d75",
+      "name": "not found batch_id"
+    },
+    {
+      "parameters": {
+        "sendTo": "oak0809@gmail.com",
+        "subject": "=[LibrAIry] สรุปผลการประเมินสำเร็จ - Batch {{ $json.batch_id }}",
+        "message": "=สรุปรายงานการประเมินหนังสือรายสัปดาห์\nBatch ID: {{ $('Code in JavaScript').item.json.batch_id }}\nจำนวนที่ผ่านการประเมิน: {{ $json.request_id.length }} เล่ม\nรายการ Request ID: {{ $json.request_id.join(', ') }}\n\nขณะนี้ระบบได้อัปเดตสถานะเป็น VENDOR_SELECTING เรียบร้อยแล้ว",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        5328,
+        160
+      ],
+      "id": "878e4323-2f95-4d71-8733-5f699dbe52a4",
+      "name": "Send succeed selecting",
+      "webhookId": "244d0b07-d608-4fe4-a3a1-f624d234ec5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GFGepZajjoBJJ1zq",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "oak0809@gmail.com",
+        "subject": "[LibrAIry] แจ้งเตือน: ประเมินผลล้มเหลวครบ 3 รอบ",
+        "message": "=แจ้งเตือน: ระบบพยายามประเมินคำร้องนี้ครบ 3 รอบแล้วแต่ไม่สำเร็จ\nID คำร้อง: {{ $json.request_id }} (จาก Node ก่อนหน้า)\nข้อผิดพลาด: {{ $json.error }}\nข้อความดิบจาก AI (Raw Output):\n{{ $json.raw_output }}\nกรุณาตรวจสอบโครงสร้างข้อมูลหรือสถานะของ Ollama",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        4528,
+        -176
+      ],
+      "id": "4796960c-2a85-418b-9149-40c94c95a06a",
+      "name": "Send failed retry",
+      "webhookId": "244d0b07-d608-4fe4-a3a1-f624d234ec5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GFGepZajjoBJJ1zq",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_requests",
+          "mode": "list",
+          "cachedResultName": "book_requests"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "request_id": "={{ $json.request_id }}",
+            "status": "={{ $json.passed_selection ? 'APPROVE' : 'REJECT' }}"
+          },
+          "matchingColumns": [
+            "request_id"
+          ],
+          "schema": [
+            {
+              "id": "request_id",
+              "displayName": "request_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "publication_year",
+              "displayName": "publication_year",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "publisher",
+              "displayName": "publisher",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "branch",
+              "displayName": "branch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "requester_name",
+              "displayName": "requester_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "requester_id",
+              "displayName": "requester_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "requester_role",
+              "displayName": "requester_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "faculty_id",
+              "displayName": "faculty_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "department_id",
+              "displayName": "department_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "request_reason_category",
+              "displayName": "request_reason_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "specify_reason",
+              "displayName": "specify_reason",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requested_at",
+              "displayName": "requested_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "remark",
+              "displayName": "remark",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "request_count",
+              "displayName": "request_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4704,
+        160
+      ],
+      "id": "256363fc-e154-4519-be0c-4fc698dfb9a5",
+      "name": "Update book requests status",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "734ce979-682a-4633-915b-50bcc0493691",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        96
+      ],
+      "id": "1aed6d2d-e3c2-420d-b8d4-6c070bbaf973",
+      "name": "If no requests"
+    },
+    {
+      "parameters": {
+        "sendTo": "oak0809@gmail.com",
+        "subject": "[LibrAIry] แจ้งเตือน: ไม่พบข้อมูลคำร้องประจำสัปดาห์",
+        "message": "=ระบบ LibrAIry Automated Acquisition ได้ดำเนินการตรวจสอบรายการคำขอหนังสือ (Book Requests) สำหรับรอบการประมวลผลปัจจุบัน แต่ไม่พบข้อมูลชุดใหม่ในฐานข้อมูล\n\nรายละเอียดการตรวจสอบ:\n• สถานะ: ไม่พบรายการ (No Requests Found)\n• เวลาที่ตรวจสอบ: {{ $now.format('yyyy-MM-dd HH:mm:ss') }} (Asia/Bangkok)\n• ตารางที่ตรวจสอบ: librairy.batches / librairy.book_requests\n\nเนื่องจากไม่มีข้อมูลเข้าระบบใน Batch นี้ ขั้นตอนการทำงานของ AI Agent และการประเมินผลอัตโนมัติจะถูกข้ามไปเพื่อประหยัดทรัพยากร\n\nหากนี่เป็นข้อผิดพลาด กรุณาตรวจสอบการทำงานของ workflow อีกครั้ง เพื่อยืนยันความถูกต้อง\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        -128
+      ],
+      "id": "9a456cf9-025d-4793-99db-4813923c1d46",
+      "name": "no requests for this batch",
+      "webhookId": "244d0b07-d608-4fe4-a3a1-f624d234ec5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GFGepZajjoBJJ1zq",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2c31959c-450b-42d4-bf79-ea427e2dfd92",
+              "leftValue": "={{$json.summary_reason || $json.score_breakdown.summary_reason }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "450b53f2-8a63-45df-869c-02a2063c96f3",
+              "leftValue": "={{ ($json.net_score || $json.score_breakdown.net_score).toString() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4000,
+        144
+      ],
+      "id": "f7d3dd4e-cee7-497b-bdf7-02e25d71de3e",
+      "name": "If no net_score and reason"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://librarian-process-web.librairy.work/api/workflow-notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"SUCCESS\",\n  \"workflowName\": \"Selecting Requests\",\n  \"executionId\": \"{{ $execution.id }}\",\n  \"message\": \"ทำการคัดเลือกคำร้องสำเร็จ\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        5328,
+        368
+      ],
+      "id": "ee9b64ab-c99e-42da-8e7c-44ff5cf271ca",
+      "name": "Website Alert Success"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://librarian-process-web.librairy.work/api/workflow-notifications",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"FAILED\",\n  \"workflowName\": \"Selecting Requests\",\n  \"executionId\": \"{{ $execution.id }}\",\n  \"message\": \"ทำการคัดเลือกคำร้องไม่สำเร็จ\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4560,
+        0
+      ],
+      "id": "616aebc4-5f57-4eab-8109-dd85f56fca06",
+      "name": "Website Alert Failed"
+    },
+    {
+      "parameters": {
+        "content": "**PLEASE README**\n\nWorkflow นี้ทำงานอยู่ใน docker container ชื่อ n8n ซึ่งอยู่ใน repo: https://github.com/NPoak/LibrAIry-Senior-Project.git ในบาง node อาจมีการเรียกใช้งาน container อื่นเพื่อทำงานร่วมกันได้\n\n🚧 Workflow: Selecting Requests (สรุปการทำงาน)\n⏱️ Trigger: ทำงานทุกวันจันทร์ เวลา 12:05 น. (หรือสั่ง Manual) เพื่อประมวลผลคำขอหนังสือของสัปดาห์ที่ผ่านมา\n\n📥 1.ดึงข้อมูล & ตรวจสอบ (Fetch & Validate)\nget batch_id: ดึง Batch ID ของสัปดาห์ที่แล้วมาประมวลผล ถ้าไม่พบจะส่ง Email แจ้งเตือนแล้วหยุดทำงานทันที\n\nget book_requests: ดึงคำร้องขอหนังสือใน Batch นั้นมาดู ถ้าไม่มีคำร้องใหม่เลย จะส่ง Email แจ้งประหยัดทรัพยากรแล้วจบการทำงานแบบ Clean\n\nJunction Handling: ตรวจสอบและบันทึกความสัมพันธ์ลงตารางตารางกลาง (batch_requests)\n\n🧠 2.แปลงข้อมูลและทำ AI Semantic Match\nVector Embedding: ส่งข้อมูลชื่อหนังสือและเหตุผลไปหาค่า Vector ที่ docker container python-worker:8000/bookembed ใน repo\n\nget book_requests from batch_requests (ตารางหลัก): ใช้เทคนิค CROSS JOIN LATERAL เปรียบเทียบค่าความคล้ายคลึงของเวกเตอร์ (Cosine Distance) เพื่อหาคณะและภาควิชาที่เกี่ยวข้องมากที่สุดโดยอัตโนมัติ\n\nคณะ (Faculties): ดึงมา 3 อันดับแรกที่ค่า Distance < 0.65\n\nภาควิชา (Departments): ดึงมา 5 อันดับแรกที่ค่า Distance < 0.75\n\nค้นหารายการหนังสือซ้ำ (Duplicate Check) จากระบบคลังหนังสือห้องสมุดเดิมไปพร้อมกัน\n\n🤖 3.ประเมินผลด้วย AI Agent (Ollama)\nSplit Requests: แยกรายการหนังสือออกมาประมวลผลทีละเล่ม (Loop)\n\nAI Agent (gpt-oss:20b): ประเมินคะแนนตัดเกรดหนังสือตามข้อบังคับนโยบายของห้องสมุด (Policies) เช่น\n\nPOL-04: คำนวณอายุหนังสือ (ปีปัจจุบัน - ปีที่พิมพ์) ต้องไม่เกิน 5 ปี หากเกินต้องมีเหตุผลจำเป็นรองรับ\n\nPOL-09: ถ้าเป็นหนังสือต่างประเทศและในคลังมีอยู่แล้ว = 0 คะแนนทันที / ถ้าเป็นหนังสือไทยหากมีเกิน 5 เล่ม = 0 คะแนน (เว้นแต่เหตุผลจำเป็นมาก)\n\nError Handling: บังคับ AI ตอบกลับเป็น JSON ภาษาไทยเท่านั้น หากโครงสร้างพัง ระบบจะตรวจจับด้วย Regex และลองใหม่ (Retry) ได้สูงสุด 3 ครั้ง หากยังพังครบ 3 ครั้งจะส่ง Email แจ้ง Error และหยุดระบบทันที\n\n📤 4.บันทึกสถานะ & แจ้งเตือนผลลัพธ์\nInsert new requests evaluation: บันทึกคะแนนดิบและเหตุผลการประเมินลงตาราง policy_evaluations\n\nUpdate book requests status: อัปเดตสถานะในตารางหลักเป็น APPROVE หรือ REJECT ตามผลคะแนนของ AI\n\nAggregate: รวบรวมข้อมูลหนังสือทั้งหมดที่วน Loop เสร็จสิ้นกลับมารวมกันเป็นก้อนเดียว\n\nAlert Notifications: ส่ง Email สรุปผลงานที่สำเร็จไปยังผู้ดูแลระบบ (oak0809@gmail.com) พร้อมส่ง POST แจ้งสถานะ SUCCESS กลับไปยังระบบหลังบ้านเพื่ออัปเดตหน้าเว็บ (Frontend)",
+        "height": 864,
+        "width": 1312,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1680,
+        432
+      ],
+      "typeVersion": 1,
+      "id": "9bdee917-f6af-446a-ad96-d06463f32715",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger1": [
+      {
+        "json": {
+          "timestamp": "2026-03-16T00:30:58.013+07:00",
+          "Readable date": "March 16th 2026, 12:30:58 am",
+          "Readable time": "12:30:58 am",
+          "Day of week": "Monday",
+          "Year": "2026",
+          "Month": "March",
+          "Day of month": "16",
+          "Hour": "00",
+          "Minute": "30",
+          "Second": "58",
+          "Timezone": "Asia/Bangkok (UTC+07:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "get batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get batch_id": {
+      "main": [
+        [
+          {
+            "node": "Extract batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get book_requests": {
+      "main": [
+        [
+          {
+            "node": "If no requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in batch_requests table": {
+      "main": [
+        [
+          {
+            "node": "Select active policies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract batch_id": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if batch_requests already created with normal weekly batch_id": {
+      "main": [
+        [
+          {
+            "node": "If batch_requests not created yet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If batch_requests not created yet": {
+      "main": [
+        [
+          {
+            "node": "Select active policies",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in batch_requests table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "check if batch_requests already created with normal weekly batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get book_requests from batch_requests": {
+      "main": [
+        [
+          {
+            "node": "Split Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get title and reason for vector search": {
+      "main": [
+        [
+          {
+            "node": "Vector Embedding title and reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Embedding title and reason": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "get book_requests from batch_requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Requests": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select active policies": {
+      "main": [
+        [
+          {
+            "node": "get title and reason for vector search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        []
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If error occurs in JSON outputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert new requests evaluation": {
+      "main": [
+        [
+          {
+            "node": "Update book requests status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If error occurs in JSON outputs": {
+      "main": [
+        [
+          {
+            "node": "If retry 3 times",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If no net_score and reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If retry 3 times": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send failed retry",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Website Alert Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send succeed selecting",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Website Alert Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When fetching a dataset row": {
+      "main": [
+        [
+          {
+            "node": "get batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "get book_requests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get batch failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get batch failed": {
+      "main": [
+        [
+          {
+            "node": "not found batch_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send failed retry": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update book requests status": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no requests": {
+      "main": [
+        [
+          {
+            "node": "no requests for this batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no net_score and reason": {
+      "main": [
+        [
+          {
+            "node": "If retry 3 times",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert new requests evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "61c22907-e0c3-49c2-83e4-7659702794aa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f9c00188d6f400698d5ec5063c8e4161b720199d095ce6574fdb762de0b579c"
+  },
+  "id": "2kTnrGNaozyWVQjk",
+  "tags": [
+    {
+      "updatedAt": "2026-02-15T19:31:57.511Z",
+      "createdAt": "2026-02-15T19:31:57.511Z",
+      "id": "wQKXPEnzQyymcdcC",
+      "name": "main"
+    },
+    {
+      "updatedAt": "2026-03-15T14:21:05.445Z",
+      "createdAt": "2026-03-15T14:21:05.445Z",
+      "id": "3jDQ5SpxlJ0vLKr7",
+      "name": "stage"
+    }
+  ]
+}

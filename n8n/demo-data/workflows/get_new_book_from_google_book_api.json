@@ -1,0 +1,4065 @@
+{
+  "name": "🛠️get new book from google book api",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "keyword"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        128
+      ],
+      "id": "b586da07-7c0a-4fe4-8787-72ce1f6a9874",
+      "name": "When Executed by Another Workflow",
+      "notesInFlow": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/books/v1/volumes?q={{ $json.keyword }}+isbn={{$json.isbn}}&maxResults=15",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -272,
+        128
+      ],
+      "id": "773b3ba9-fae9-4a73-b4e0-64031202a24f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rating": "={{ $json.averageRating }}",
+            "price": "={{ $json.amount }}",
+            "isbn_issn": "={{ $json.isbn }}",
+            "title": "={{ $json.title }}",
+            "author": "={{ $json.authors }}",
+            "small_thumb_nail": "={{ $json.smallThumbnail }}",
+            "thumb_nail": "={{ $json.thumbnail }}",
+            "publisher": "={{ $json.publisher }}",
+            "year_of_publication": "={{ $json.publishedDate }}",
+            "description": "={{ $json.description }}",
+            "format": "={{ $json.printType }}",
+            "subject": "={{ $json.categories }}",
+            "currency": "={{ $json.currencyCode }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cache_id",
+              "displayName": "cache_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bibid",
+              "displayName": "bibid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "small_thumb_nail",
+              "displayName": "small_thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thumb_nail",
+              "displayName": "thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "publisher",
+              "displayName": "publisher",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "year_of_publication",
+              "displayName": "year_of_publication",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "format",
+              "displayName": "format",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rating",
+              "displayName": "rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_fetched_at",
+              "displayName": "last_fetched_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vector",
+              "displayName": "vector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2848,
+        -80
+      ],
+      "id": "c7e0ac88-97fd-413e-93bd-7e78b417ce96",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8012e09-9668-48ef-b6d8-d65db1ac2e43",
+              "name": "book_lists",
+              "value": "={{ $json.items }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        128
+      ],
+      "id": "9272c779-ccdd-426a-a6fe-9235fd3a7d95",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "book_lists",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        176,
+        128
+      ],
+      "id": "22130092-7996-41c1-8c77-2ceaf40720ae",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0957b8c6-ebaf-4c94-8f79-ab45ae7485e5",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "5e58a98a-5ef8-4bcb-8cc1-fff105df1599",
+              "leftValue": "={{ $input.all().length }}",
+              "rightValue": "NULL",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        128
+      ],
+      "id": "a26c25ea-e2bb-463c-9b10-b4aa1ea7dece",
+      "name": "If",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        848,
+        128
+      ],
+      "id": "3da8db25-a322-422a-aae8-1e0e7596587c",
+      "name": "Limit 5 books"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0fe9c16b-bd69-4fe2-a270-0e3e26c75b9d",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_13",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "34c0b0b5-81f4-4341-82e6-6bf54fe2d6e3",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_10",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        128
+      ],
+      "id": "922d72e8-86d4-4326-b0e9-0b46e20cf318",
+      "name": "Filter for books that has ISBN",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06770cd4-381f-47e7-9e22-9b86d3b4bcf6",
+              "name": "title",
+              "value": "={{ $json.volumeInfo.title }}",
+              "type": "string"
+            },
+            {
+              "id": "7d310da1-5243-4f31-93c7-fb3e6b54a753",
+              "name": "authors",
+              "value": "={{ $json.volumeInfo.authors.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "d7f40358-50d9-49d3-815f-df470ddbd1d5",
+              "name": "isbn",
+              "value": "={{ ($json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_13\") || $json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_10\"))?.identifier }}",
+              "type": "string"
+            },
+            {
+              "id": "66a2991e-c200-444d-9643-9ebaf42de8bd",
+              "name": "publisher",
+              "value": "={{ JSON.parse($json.volumeInfo.publisher) }}",
+              "type": "string"
+            },
+            {
+              "id": "e479b28d-f8a5-4666-b040-d23c1490370d",
+              "name": "publishedDate",
+              "value": "={{ $json.volumeInfo.publishedDate }}",
+              "type": "string"
+            },
+            {
+              "id": "f7c4729b-c325-43e8-bf7f-5084d8579bd3",
+              "name": "description",
+              "value": "={{ $json.volumeInfo.description }}",
+              "type": "string"
+            },
+            {
+              "id": "40adee5b-70bd-4bfb-8443-4b229aac24e7",
+              "name": "printType",
+              "value": "={{ $json.volumeInfo.printType }}",
+              "type": "string"
+            },
+            {
+              "id": "e7be0eef-882b-464c-90c9-27198852ffe9",
+              "name": "categories",
+              "value": "={{ $json.volumeInfo.categories.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "644e4b07-f937-4610-bc01-8875d9401f87",
+              "name": "averageRating",
+              "value": "={{ $json.volumeInfo.averageRating }}",
+              "type": "number"
+            },
+            {
+              "id": "2c68004c-42fb-460e-aa65-367fc209dd6c",
+              "name": "amount",
+              "value": "={{ $json.saleInfo.listPrice.amount }}",
+              "type": "string"
+            },
+            {
+              "id": "e96667c7-00b4-4443-b2e0-3cb23ebfb2c2",
+              "name": "currencyCode",
+              "value": "={{ $json.saleInfo.listPrice.currencyCode }}",
+              "type": "string"
+            },
+            {
+              "id": "500a5b39-4804-4556-ace5-3a3d85b119c2",
+              "name": "smallThumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.smallThumbnail }}",
+              "type": "string"
+            },
+            {
+              "id": "e98f6d46-d171-488b-b2f8-52eb7ee21a14",
+              "name": "thumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.thumbnail }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        128
+      ],
+      "id": "ae844ad1-960d-42ae-b27a-3916e27e6431",
+      "name": "final df"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn_issn",
+              "value": "={{ $json.isbn }}"
+            },
+            {
+              "column": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "column": "author",
+              "value": "={{ $json.authors }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        32
+      ],
+      "id": "da6ab4a1-ab85-44ac-b803-a59c6a53baef",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6d3aa9f-8ac6-4218-99df-22cd417998fa",
+              "leftValue": "={{ Object.keys($json).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1984,
+        16
+      ],
+      "id": "2648c162-791f-42c8-b1a3-a7d2fa942663",
+      "name": "check if the book has no cache",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-worker:8000/bookembed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "author",
+              "value": "={{ $json.authors }}"
+            },
+            {
+              "name": "publisher",
+              "value": "={{ $json.publisher }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $json.description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2208,
+        -80
+      ],
+      "id": "7cbd8c5b-d3d9-4094-81ce-12abe03b6669",
+      "name": "Vector Embedding"
+    },
+    {
+      "parameters": {
+        "jsCode": "const outputItems = [];\n\nfor (const item of $('final df').all()) {\n  const bookData = {\n    title: item.json.title,\n    authors: item.json.authors,\n    isbn: item.json.isbn,\n    publisher: item.json.publisher,\n    publishedDate: item.json.publishedDate,\n    categories: item.json.categories,\n    description: item.json.description,\n    printType: item.json.printType,\n    averageRating: item.json.averageRating,\n    amount: item.json.amount,\n    currencyCode: item.json.currencyCode,\n    smallThumbnail: item.json.smallThumbnail,\n    thumbnail: item.json.thumbnail\n  };\n\n  outputItems.push({\n    json: bookData\n  });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        -80
+      ],
+      "id": "a027b400-d8e4-481e-9539-530f782a4feb",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "title, authors, isbn, publisher, publishedDate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        128
+      ],
+      "id": "964382a1-aa4d-4403-a07e-a1b99be892d4",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "title, authors, isbn, publisher, publishedDate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        -80
+      ],
+      "id": "ee285c5f-5a97-4ff5-bcd2-99c4b5717d81",
+      "name": "Remove Duplicates1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn_issn",
+              "value": "={{ $('Remove Duplicates1').item.json.isbn }}"
+            },
+            {
+              "column": "title",
+              "value": "={{ $('Remove Duplicates1').item.json.title }}"
+            },
+            {
+              "column": "author",
+              "value": "={{ $('Remove Duplicates1').item.json.authors }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3056,
+        -80
+      ],
+      "id": "b88e24c5-0a7f-4863-a8f8-8bcc8905e82f",
+      "name": "Select rows from a table1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f8b9b890-e89b-4e5f-acad-8e9f82bc04be",
+              "name": "cache_id",
+              "value": "={{ $json.cache_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e3ffcb70-c54d-4d9b-af0f-4adc8d8f5419",
+              "name": "isbn_issn",
+              "value": "={{ $json.isbn_issn }}",
+              "type": "string"
+            },
+            {
+              "id": "a36003d2-43e9-4378-bf79-70df04fc6602",
+              "name": "bibid",
+              "value": "={{ $json.bibid }}",
+              "type": "string"
+            },
+            {
+              "id": "64679ca7-968b-4c2b-80a2-19eb18ddaf7f",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "49628120-9610-41eb-923e-4e130b26c37b",
+              "name": "author",
+              "value": "={{ $json.author }}",
+              "type": "string"
+            },
+            {
+              "id": "27bc96ee-9048-4d41-ac1c-b8274e0f2b04",
+              "name": "small_thumb_nail",
+              "value": "={{ $json.small_thumb_nail }}",
+              "type": "string"
+            },
+            {
+              "id": "8fed3fbc-6ac8-4a9d-b0b8-990b12e23e0b",
+              "name": "thumb_nail",
+              "value": "={{ $json.thumb_nail }}",
+              "type": "string"
+            },
+            {
+              "id": "e398a6a3-5ab8-45c4-8b7e-67566a3bb7d8",
+              "name": "publisher",
+              "value": "={{ $json.publisher }}",
+              "type": "string"
+            },
+            {
+              "id": "a9f820de-e862-4bfe-a4b1-b69f07763e29",
+              "name": "year_of_publication",
+              "value": "={{ $json.year_of_publication }}",
+              "type": "string"
+            },
+            {
+              "id": "124a7159-c365-460a-8b20-0f2fa151f7c2",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "2e98e014-2bd9-468d-928b-b9ddeab967a0",
+              "name": "format",
+              "value": "={{ $json.format }}",
+              "type": "string"
+            },
+            {
+              "id": "46e4ff4c-f9ec-46fb-afc6-948356f7a6a6",
+              "name": "subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "fe5e6600-c382-4d52-8636-85d82b294a78",
+              "name": "rating",
+              "value": "={{ $json.rating }}",
+              "type": "string"
+            },
+            {
+              "id": "93f1092b-c48b-4e76-8682-044d5a8698d3",
+              "name": "price",
+              "value": "={{ $json.price }}",
+              "type": "string"
+            },
+            {
+              "id": "acbb05a3-f315-4018-a614-6fc59e652f63",
+              "name": "currency",
+              "value": "={{ $json.currency }}",
+              "type": "string"
+            },
+            {
+              "id": "83b3b466-6a6b-43e3-bb08-d8fc7e38748f",
+              "name": "last_fetched_at",
+              "value": "={{ $json.last_fetched_at }}",
+              "type": "string"
+            },
+            {
+              "id": "eaf53d95-66e2-42fe-aa30-3532fdf018d0",
+              "name": "vector",
+              "value": "={{ $json.vector }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2208,
+        160
+      ],
+      "id": "c72e0343-aa81-4555-b057-57e85ef37a87",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f8b9b890-e89b-4e5f-acad-8e9f82bc04be",
+              "name": "cache_id",
+              "value": "={{ $json.cache_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e3ffcb70-c54d-4d9b-af0f-4adc8d8f5419",
+              "name": "isbn_issn",
+              "value": "={{ $json.isbn_issn }}",
+              "type": "string"
+            },
+            {
+              "id": "a36003d2-43e9-4378-bf79-70df04fc6602",
+              "name": "bibid",
+              "value": "={{ $json.bibid }}",
+              "type": "string"
+            },
+            {
+              "id": "64679ca7-968b-4c2b-80a2-19eb18ddaf7f",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "49628120-9610-41eb-923e-4e130b26c37b",
+              "name": "author",
+              "value": "={{ $json.author }}",
+              "type": "string"
+            },
+            {
+              "id": "27bc96ee-9048-4d41-ac1c-b8274e0f2b04",
+              "name": "small_thumb_nail",
+              "value": "={{ $json.small_thumb_nail }}",
+              "type": "string"
+            },
+            {
+              "id": "8fed3fbc-6ac8-4a9d-b0b8-990b12e23e0b",
+              "name": "thumb_nail",
+              "value": "={{ $json.thumb_nail }}",
+              "type": "string"
+            },
+            {
+              "id": "e398a6a3-5ab8-45c4-8b7e-67566a3bb7d8",
+              "name": "publisher",
+              "value": "={{ $json.publisher }}",
+              "type": "string"
+            },
+            {
+              "id": "a9f820de-e862-4bfe-a4b1-b69f07763e29",
+              "name": "year_of_publication",
+              "value": "={{ $json.year_of_publication }}",
+              "type": "string"
+            },
+            {
+              "id": "124a7159-c365-460a-8b20-0f2fa151f7c2",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "2e98e014-2bd9-468d-928b-b9ddeab967a0",
+              "name": "format",
+              "value": "={{ $json.format }}",
+              "type": "string"
+            },
+            {
+              "id": "46e4ff4c-f9ec-46fb-afc6-948356f7a6a6",
+              "name": "subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "fe5e6600-c382-4d52-8636-85d82b294a78",
+              "name": "rating",
+              "value": "={{ $json.rating }}",
+              "type": "string"
+            },
+            {
+              "id": "93f1092b-c48b-4e76-8682-044d5a8698d3",
+              "name": "price",
+              "value": "={{ $json.price }}",
+              "type": "string"
+            },
+            {
+              "id": "acbb05a3-f315-4018-a614-6fc59e652f63",
+              "name": "currency",
+              "value": "={{ $json.currency }}",
+              "type": "string"
+            },
+            {
+              "id": "83b3b466-6a6b-43e3-bb08-d8fc7e38748f",
+              "name": "last_fetched_at",
+              "value": "={{ $json.last_fetched_at }}",
+              "type": "string"
+            },
+            {
+              "id": "eaf53d95-66e2-42fe-aa30-3532fdf018d0",
+              "name": "vector",
+              "value": "={{ $json.vector }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3248,
+        -80
+      ],
+      "id": "f1f94a5f-e81a-478a-947a-7c8c27ed0bd8",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "compare": "selectedFields",
+        "fieldsToCompare": "cache_id, isbn_issn, title",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        176
+      ],
+      "id": "b74280f5-ac58-484a-86d7-a8ce184039a7",
+      "name": "Remove Duplicates2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6d3aa9f-8ac6-4218-99df-22cd417998fa",
+              "leftValue": "={{ Object.keys($json).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1648,
+        32
+      ],
+      "id": "dc6d96dc-c6d7-47e2-b524-473639b86e5e",
+      "name": "check if the book has no cache1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "content": "📚 Workflow: Google Books Fetcher & Cache System (สรุปการทำงาน)\n⏱️ Trigger: ถูกเรียกใช้งานจาก Workflow อื่น (When Executed by Another Workflow) โดยจะรับค่าคีย์เวิร์ดมาค้นหาหนังสือ\n\n🔍 1. ค้นหาข้อมูลจาก Google Books API\nHTTP Request:ยิง API ไปที่ googleapis.com/books เพื่อค้นหาข้อมูลหนังสือตาม keyword และ isbn ที่ส่งมา (ดึงข้อมูลสูงสุด 15 รายการ)\n\nData Transformation (Edit Fields -> Split Out): จัดกลุ่มผลลัพธ์ให้อยู่ใน Array ชื่อ book_lists แล้วแตกไอเทมออกมาเป็นรายเล่มเพื่อประมวลผลแยกกัน\n\n🛡️ 2. กรองข้อมูล & ป้องกันข้อมูลซ้ำ (Data Cleansing)\nFilter for books that has ISBN: คัดเลือกเอาเฉพาะหนังสือที่มีรหัสอนุกรมมาตรฐานสากล (ISBN_13 หรือ ISBN_10) เท่านั้น เล่มไหนไม่มีจะถูกตัดทิ้ง\n\nLimit 5 books: จำกัดการประมวลผลเอาเฉพาะหนังสือที่ดีที่สุด 5 เล่มแรกเพื่อประหยัด Resource\n\nfinal df (Set Node): แมปปิ้งฟิลด์และล้างข้อมูล (Clean data) เช่น การลบเครื่องหมายตระกูล Bracket ปีกกา หรือ Single quote ออกจากชื่อผู้แต่งและหมวดหมู่หนังสือ\n\nRemove Duplicates: ป้องกันหนังสือซ้ำซ้อนโดยตรวจสอบจาก title, authors, isbn, publisher, และ publishedDate ก่อนส่งไปเช็คกับฐานข้อมูล\n\n🗄️ 3. ตรวจสอบระบบ Cache (book_api_cache)\nSelect rows from a table: นำข้อมูลที่ได้ไปค้นหาในตาราง librairy.book_api_cache ดูว่าหนังสือเล่มนี้เคยถูกดึงข้อมูลมาเก็บไว้ในระบบแล้วหรือยัง\n\ncheck if the book has no cache1 (If Node): แยกเส้นทางตามสถานะ Cache:\n\nกรณีที่ยังไม่มี Cache (True): จะวิ่งไปทำ Vector Embedding (แปลงข้อมูลหนังสือเป็นเวกเตอร์ผ่าน python-worker:8000/bookembed) -> บันทึกข้อมูลและเวกเตอร์ลงตาราง Cache ผ่านเครื่องมือ Insert rows in a table เพื่อให้ Workflow ตัวคัดเลือกคำร้องใช้งานต่อได้\n\nกรณีที่มี Cache อยู่แล้ว (False): จะข้ามขั้นตอนการยิง Embedding เพื่อลด Latency แล้วดึงข้อมูลจากตาราง Cache เดิมมาใช้งานทันทีผ่านฟิลด์ใน Edit Fields1 / Edit Fields2",
+        "height": 560,
+        "width": 1632
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        816,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "e0c60b43-5bd3-407f-8ae9-d19a229e475e",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {
+    "Edit Fields": [
+      {
+        "json": {
+          "book_lists": [
+            {
+              "kind": "books#volume",
+              "id": "vilmDwAAQBAJ",
+              "etag": "pBTkz9TxBqw",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/vilmDwAAQBAJ",
+              "volumeInfo": {
+                "title": "The Power of Python",
+                "authors": [
+                  "Rachel Keranen"
+                ],
+                "publisher": "Cavendish Square Publishing, LLC",
+                "publishedDate": "2017-12-15",
+                "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9781502629494"
+                  },
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "1502629496"
+                  }
+                ],
+                "readingModes": {
+                  "text": true,
+                  "image": true
+                },
+                "pageCount": 114,
+                "printType": "BOOK",
+                "categories": [
+                  "Juvenile Nonfiction"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "0.3.3.0.preview.3",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=1&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/The_Power_of_Python.html?hl=&id=vilmDwAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-epub.acsm?id=vilmDwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-pdf.acsm?id=vilmDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=vilmDwAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "6o9oEQAAQBAJ",
+              "etag": "K2VHk7nHwFU",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/6o9oEQAAQBAJ",
+              "volumeInfo": {
+                "title": "คู่มือ Coding ภาษา PYTHON ฉบับสมบูรณ์ 3rd Edition",
+                "authors": [
+                  "สุดา เธียรมนตรี"
+                ],
+                "publisher": "Hytexts Interactive Limited",
+                "description": "เป็นคู่มือเรียนเขียนโปรแกรมภาษา Python ที่อธิบายตั้งแต่เริ่มต้นติดตั้งโปรแกรม พื้นฐานภาษา หลักภาษา การเขียนโปรแกรมที่ซับซ้อน จนสามารถพัฒนาเป็นโปรแกรมที่สามารถใช้งานได้จริง สอนและอธิบายอย่างละเอียด เป็นขั้นตอน มีโค้ดให้ดาวน์โหลดได้ฟรี เหมาะสำหรับนักเรียน นักศึกษาที่กำลังเรียนและผู้ที่สนใจ keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ,idcpremier",
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 482,
+                "printType": "BOOK",
+                "categories": [
+                  "Technology & Engineering"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "preview-1.0.0",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=6o9oEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=6o9oEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "th",
+                "previewLink": "http://books.google.co.th/books?id=6o9oEQAAQBAJ&pg=PA5&dq=pythone&hl=&cd=2&source=gbs_api",
+                "infoLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ&source=gbs_api",
+                "canonicalVolumeLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "FOR_SALE",
+                "isEbook": true,
+                "listPrice": {
+                  "amount": 580.88,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amount": 395,
+                  "currencyCode": "THB"
+                },
+                "buyLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ&rdid=book-6o9oEQAAQBAJ&rdot=1&source=gbs_api",
+                "offers": [
+                  {
+                    "finskyOfferType": 1,
+                    "listPrice": {
+                      "amountInMicros": 580880000,
+                      "currencyCode": "THB"
+                    },
+                    "retailPrice": {
+                      "amountInMicros": 395000000,
+                      "currencyCode": "THB"
+                    }
+                  }
+                ]
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD_Coding_%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2_P-sample-pdf.acsm?id=6o9oEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=6o9oEQAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "... <b>Python</b> 3.12.0 Tcl / Tk Support ( 64 - bit ) <b>python</b> windows for 4. จะ ปรากฏ หน้าต่าง แสดง การ ติด ตั้ง เสร็จ สมบูรณ์ ให้ คลิก ปุ่ม <b>Python</b> 3.12.0 ( 64 - bit ) Setup Setup was successful New to ... <b>Python</b> ( Introduction to <b>Python</b> )〈 5 〉"
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "1HxWGezDZcgC",
+              "etag": "TNYPypW4ZXw",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/1HxWGezDZcgC",
+              "volumeInfo": {
+                "title": "Learning Python",
+                "subtitle": "Powerful Object-Oriented Programming",
+                "authors": [
+                  "Mark Lutz"
+                ],
+                "publisher": "\"O'Reilly Media, Inc.\"",
+                "publishedDate": "2009-10-06",
+                "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9781449379322"
+                  },
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "144937932X"
+                  }
+                ],
+                "readingModes": {
+                  "text": true,
+                  "image": true
+                },
+                "pageCount": 1218,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "averageRating": 4,
+                "ratingsCount": 5,
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": true,
+                "contentVersion": "0.12.9.0.preview.3",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&pg=PA7&dq=pythone&hl=&cd=3&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Learning_Python.html?hl=&id=1HxWGezDZcgC"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": true
+                },
+                "pdf": {
+                  "isAvailable": true
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=1HxWGezDZcgC&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "... <b>Python</b> today compile (i.e., translate) source code state- ments to an intermediate format known as byte code and then interpret the byte code. Byte code provides portability, as it is a platform-independent format. However, be- cause <b>Python</b>&nbsp;..."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "oxQ6EAAAQBAJ",
+              "etag": "iq8Ssicm0Hw",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/oxQ6EAAAQBAJ",
+              "volumeInfo": {
+                "title": "คู่มือ Coding ภาษา Python ฉบับสมบูรณ์",
+                "authors": [
+                  "ผศ.สุดา เธียรมนตรี"
+                ],
+                "publisher": "Hytexts Interactive Limited",
+                "description": "เริ่มต้นฝึกฝนอย่างถูกต้องง่าย ๆ รวดเร็ว ด้วยหลักการและแบบฝึกหัดต่าง ๆ พร้อมคำอธิบาย ครอบคลุมพื้นฐานไปจนการใช้งานระดับสูง อาทิ OOP, Database, Data Visualization , Data Science keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": true,
+                "contentVersion": "0.0.1.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=oxQ6EAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=oxQ6EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "th",
+                "previewLink": "http://books.google.co.th/books?id=oxQ6EAAAQBAJ&pg=PA3&dq=pythone&hl=&cd=4&source=gbs_api",
+                "infoLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ&source=gbs_api",
+                "canonicalVolumeLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "FOR_SALE",
+                "isEbook": true,
+                "listPrice": {
+                  "amount": 485.29,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amount": 330,
+                  "currencyCode": "THB"
+                },
+                "buyLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ&rdid=book-oxQ6EAAAQBAJ&rdot=1&source=gbs_api",
+                "offers": [
+                  {
+                    "finskyOfferType": 1,
+                    "listPrice": {
+                      "amountInMicros": 485290000,
+                      "currencyCode": "THB"
+                    },
+                    "retailPrice": {
+                      "amountInMicros": 330000000,
+                      "currencyCode": "THB"
+                    }
+                  }
+                ]
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD_Coding_%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2_P-sample-pdf.acsm?id=oxQ6EAAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=oxQ6EAAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "ผศ.สุดา เธียรมนตรี. <b>Python</b> ใน การ พัฒนา โปรแกรม ด้วย ภาษา <b>Python</b> จะ มี เครื่องมือ ที่ รองรับ การ พัฒนา มากมาย ซึ่ง เครื่องมือ แต่ละ ตัว ก็ จะ มี คุณลักษณะ ที่ แตก ต่าง กัน ไป เช่น Komodo IDE เป็น ชุด เครื่องมือ ที่ มี ลิขสิทธิ์ มี ค่า ใช้ จ่าย รองรับ ใน หลาย ภาษา เช่น <b>Python</b>&nbsp;..."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "B_VeEAAAQBAJ",
+              "etag": "FuRZS9UsLIc",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/B_VeEAAAQBAJ",
+              "volumeInfo": {
+                "title": "Python Data Science เรียนรู้ Concept และฝึกฝน Coding",
+                "authors": [
+                  "ศุภชัย สมพานิช"
+                ],
+                "publisher": "Hytexts Interactive Limited",
+                "description": "เรียนรู้หลักการเขียนโปรแกรมเกี่ยวกับ Data Science ด้วยภาษา Python โดยเรียนรู้ภาษาและคำสั่งที่จำเป็นจนสามารถนำไปประยุกต์ใช้งานได้จริง keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 346,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": true,
+                "contentVersion": "0.1.0.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=B_VeEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=B_VeEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "th",
+                "previewLink": "http://books.google.co.th/books?id=B_VeEAAAQBAJ&pg=PA8&dq=pythone&hl=&cd=5&source=gbs_api",
+                "infoLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ&source=gbs_api",
+                "canonicalVolumeLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "FOR_SALE",
+                "isEbook": true,
+                "listPrice": {
+                  "amount": 529.41,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amount": 360,
+                  "currencyCode": "THB"
+                },
+                "buyLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ&rdid=book-B_VeEAAAQBAJ&rdot=1&source=gbs_api",
+                "offers": [
+                  {
+                    "finskyOfferType": 1,
+                    "listPrice": {
+                      "amountInMicros": 529410000,
+                      "currencyCode": "THB"
+                    },
+                    "retailPrice": {
+                      "amountInMicros": 360000000,
+                      "currencyCode": "THB"
+                    }
+                  }
+                ]
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/Python_Data_Science_%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A3-sample-pdf.acsm?id=B_VeEAAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=B_VeEAAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "... Inspect Code ... <b>Python</b> file <b>Python</b> unit test รูป ที่ 1-10 แสดง การ สร้าง ไฟล์ ที่ ชื่อว่า BasicPython ( .py ) 3. ใน ไฟล์ BasicPython.py ให้ เขียน โค้ด ต่อ ไป นี้. 8 <b>Python</b> Data Science เรียน รู้ Concept และ ฝึกฝน Coding م <b>Python</b> Data Science."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "mh0bU6NXrBgC",
+              "etag": "EWi7aMqRJU0",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/mh0bU6NXrBgC",
+              "volumeInfo": {
+                "title": "Core Python Programming",
+                "authors": [
+                  "Wesley Chun"
+                ],
+                "publisher": "Prentice Hall Professional",
+                "publishedDate": "2001",
+                "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9780130260369"
+                  },
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "0130260363"
+                  }
+                ],
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 805,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "averageRating": 3.5,
+                "ratingsCount": 13,
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "0.4.3.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&printsec=frontcover&dq=pythone&hl=&cd=6&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Core_Python_Programming.html?hl=&id=mh0bU6NXrBgC"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": false
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=mh0bU6NXrBgC&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "UWlo-c4WEpAC",
+              "etag": "ELCmcudsj30",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/UWlo-c4WEpAC",
+              "volumeInfo": {
+                "title": "Python for Data Analysis",
+                "authors": [
+                  "Wes McKinney"
+                ],
+                "publisher": "\"O'Reilly Media, Inc.\"",
+                "publishedDate": "2013",
+                "description": "Serves as an introduction to Python for data-intensive applications.",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9781449319793"
+                  },
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "1449319793"
+                  }
+                ],
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 471,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "0.3.1.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&printsec=frontcover&dq=pythone&hl=&cd=7&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Python_for_Data_Analysis.html?hl=&id=UWlo-c4WEpAC"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=UWlo-c4WEpAC&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "Serves as an introduction to Python for data-intensive applications."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "b-2oDwAAQBAJ",
+              "etag": "n0iIfOQoAnQ",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/b-2oDwAAQBAJ",
+              "volumeInfo": {
+                "title": "Python Programming in Context",
+                "authors": [
+                  "Bradley N. Miller",
+                  "David L. Ranum",
+                  "Julie Anderson"
+                ],
+                "publisher": "Jones & Bartlett Learning",
+                "publishedDate": "2019-10-01",
+                "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9781284175554"
+                  },
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "1284175553"
+                  }
+                ],
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 516,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "0.2.2.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=8&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming_in_Context.html?hl=&id=b-2oDwAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/Python_Programming_in_Context-sample-pdf.acsm?id=b-2oDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=b-2oDwAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics."
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "JmE4zgEACAAJ",
+              "etag": "9DjA6GAKApE",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/JmE4zgEACAAJ",
+              "volumeInfo": {
+                "title": "Python Programming",
+                "subtitle": "This Book Includes: Python for Beginners - Python for Data Science",
+                "authors": [
+                  "Daniel O'Reilly"
+                ],
+                "publishedDate": "2021-02-08",
+                "description": "★ 55% OFF for Bookstores! NOW at $45.95 instead of $55.95★ Would You Like to Know How to Automate Boring Stuff Quickly? Discover the Easiest Way to Learn Everything About Python and Machine Learning! Are you ready to embark on a great journey through the incredible world of Python and data science? If you are reading this, you probably have a keen interest in programming and computer science. You like to know how things work, and you want to make them work as efficiently as possible, right? If so, then Python is the perfect programming language for you to learn! Would you like to: Learn how programming in Python works? Learn to automate tasks with Python? Bring your ideas to life faster and monetize them easily? But you: Have no prior knowledge about Python? Are a little bit afraid because it seems complicated? Well, if the answer to any question is \"yes,\" then the solution you are looking for is right in front of you. With this incredible bundle in your hands, you will go from beginner to pro in no time. The guides found inside this bundle are designed explicitly for people with little or no prior knowledge about Python programming. Every manual is written in a step-by-step and easy to digest manner so that you can understand Python without any trouble. Here's what this bundle about Python programming and data science can offer you: Basics of programming with Python: A comprehensive guide on how to get everything up and running. Essential tools guide: Learn how to use the best tools that are available for programming with Python. Programming made easy: Quick and easy way to learn how to make amazing and useful programs. Mastering the art of programming: Find out how to go from beginner to pro in no time with unique coding methods. Practical techniques and exercises: Put your knowledge to test and bring your ideas to life in no time. It doesn't matter if you are a beginner or you have never coded before; this guide will slowly ease you into the world of Python and data science. While most of the other similar books focus purely on theory and complicated concepts, these guides focus on a more practical approach to learning Python and data science. First of all, you'll learn basic programming concepts, such as variables, lists, classes, and loops. Then you will practice clean code writing and how to test your code safely. After that, you'll be able to put your knowledge to the test with some practical projects. Here is what else this bundle will show you: The basics of data types, variables, and structures How to properly define the data type of data structure Suitable types of operations and functions for data structuring Methods and applications of data analysis The basics of neural networks and how to create one Use of algorithm and models in data science Using data for prediction and deep learning The best thing about Python is that it's easy to learn and even easier to get up and running. By using tools like Django, for example, you can quickly bring your ideas and creations to life and start monetizing them in no time. The second best thing about learning how to program in Python is the advantage you'll have when you start learning other programming languages-after you master Python, learning different programming languages will be a piece of cake. If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!",
+                "industryIdentifiers": [
+                  {
+                    "type": "ISBN_10",
+                    "identifier": "180182603X"
+                  },
+                  {
+                    "type": "ISBN_13",
+                    "identifier": "9781801826037"
+                  }
+                ],
+                "readingModes": {
+                  "text": false,
+                  "image": false
+                },
+                "pageCount": 292,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "preview-1.0.0",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&cd=9&source=gbs_api",
+                "infoLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming.html?hl=&id=JmE4zgEACAAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "NO_PAGES",
+                "embeddable": false,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": false
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=JmE4zgEACAAJ&hl=&source=gbs_api",
+                "accessViewStatus": "NONE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!"
+              }
+            },
+            {
+              "kind": "books#volume",
+              "id": "5rLqDwAAQBAJ",
+              "etag": "15xTwPIIzJk",
+              "selfLink": "https://www.googleapis.com/books/v1/volumes/5rLqDwAAQBAJ",
+              "volumeInfo": {
+                "title": "คู่มือเรียนเขียนโปรแกรมภาษา Python ฉบับสมบูรณ์",
+                "authors": [
+                  "ผศ.สุดา เธียรมนตรี"
+                ],
+                "publisher": "Hytexts Interactive Limited",
+                "description": "อ่านเข้าใจง่าย มีแบบฝึกหัดและตัวอย่างพร้อมคำอธิบายทุกหัวข้อ มีตัวอย่างประยุกต์การพัฒนาโปรแกรมที่หลากหลาย เหมาะสำหรับนักเรียน นักศึกษา และผู้ที่สนใจเขียนโปรแกรมภาษา Python keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+                "readingModes": {
+                  "text": false,
+                  "image": true
+                },
+                "pageCount": 418,
+                "printType": "BOOK",
+                "categories": [
+                  "Computers"
+                ],
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": true,
+                "contentVersion": "2.1.1.0.preview.1",
+                "panelizationSummary": {
+                  "containsEpubBubbles": false,
+                  "containsImageBubbles": false
+                },
+                "imageLinks": {
+                  "smallThumbnail": "http://books.google.com/books/content?id=5rLqDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                  "thumbnail": "http://books.google.com/books/content?id=5rLqDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "th",
+                "previewLink": "http://books.google.co.th/books?id=5rLqDwAAQBAJ&pg=PA3&dq=pythone&hl=&cd=10&source=gbs_api",
+                "infoLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ&source=gbs_api",
+                "canonicalVolumeLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ"
+              },
+              "saleInfo": {
+                "country": "TH",
+                "saleability": "FOR_SALE",
+                "isEbook": true,
+                "listPrice": {
+                  "amount": 470.59,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amount": 320,
+                  "currencyCode": "THB"
+                },
+                "buyLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ&rdid=book-5rLqDwAAQBAJ&rdot=1&source=gbs_api",
+                "offers": [
+                  {
+                    "finskyOfferType": 1,
+                    "listPrice": {
+                      "amountInMicros": 470590000,
+                      "currencyCode": "THB"
+                    },
+                    "retailPrice": {
+                      "amountInMicros": 320000000,
+                      "currencyCode": "THB"
+                    }
+                  }
+                ]
+              },
+              "accessInfo": {
+                "country": "TH",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                  "isAvailable": false
+                },
+                "pdf": {
+                  "isAvailable": true,
+                  "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%80%E0%B8%82-sample-pdf.acsm?id=5rLqDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=5rLqDwAAQBAJ&hl=&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+              },
+              "searchInfo": {
+                "textSnippet": "... <b>Python</b> ใน การ พัฒนา โปรแกรม ด้วย ภาษา <b>Python</b> จะ มี เครื่องมือ ที่ รองรับ การ พัฒนา มากมาย ซึ่ง เครื่องมือ แต่ละ ตัว ก็ จะ มี คุณลักษณะ ที่ แตก ต่าง กัน ไป เช่น • • • • • Komodo IDE เป็น ชุด เครื่องมือ ที่ มี ลิขสิทธิ์ มี ค่า ใช้ จ่าย รองรับ ใน หลาย ภาษา เช่น <b>Python</b>&nbsp;..."
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Split Out": [
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "vilmDwAAQBAJ",
+          "etag": "pBTkz9TxBqw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/vilmDwAAQBAJ",
+          "volumeInfo": {
+            "title": "The Power of Python",
+            "authors": [
+              "Rachel Keranen"
+            ],
+            "publisher": "Cavendish Square Publishing, LLC",
+            "publishedDate": "2017-12-15",
+            "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781502629494"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1502629496"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 114,
+            "printType": "BOOK",
+            "categories": [
+              "Juvenile Nonfiction"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.3.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=1&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/The_Power_of_Python.html?hl=&id=vilmDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-epub.acsm?id=vilmDwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-pdf.acsm?id=vilmDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=vilmDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "6o9oEQAAQBAJ",
+          "etag": "K2VHk7nHwFU",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/6o9oEQAAQBAJ",
+          "volumeInfo": {
+            "title": "คู่มือ Coding ภาษา PYTHON ฉบับสมบูรณ์ 3rd Edition",
+            "authors": [
+              "สุดา เธียรมนตรี"
+            ],
+            "publisher": "Hytexts Interactive Limited",
+            "description": "เป็นคู่มือเรียนเขียนโปรแกรมภาษา Python ที่อธิบายตั้งแต่เริ่มต้นติดตั้งโปรแกรม พื้นฐานภาษา หลักภาษา การเขียนโปรแกรมที่ซับซ้อน จนสามารถพัฒนาเป็นโปรแกรมที่สามารถใช้งานได้จริง สอนและอธิบายอย่างละเอียด เป็นขั้นตอน มีโค้ดให้ดาวน์โหลดได้ฟรี เหมาะสำหรับนักเรียน นักศึกษาที่กำลังเรียนและผู้ที่สนใจ keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ,idcpremier",
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 482,
+            "printType": "BOOK",
+            "categories": [
+              "Technology & Engineering"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "preview-1.0.0",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=6o9oEQAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=6o9oEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "th",
+            "previewLink": "http://books.google.co.th/books?id=6o9oEQAAQBAJ&pg=PA5&dq=pythone&hl=&cd=2&source=gbs_api",
+            "infoLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ&source=gbs_api",
+            "canonicalVolumeLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "FOR_SALE",
+            "isEbook": true,
+            "listPrice": {
+              "amount": 580.88,
+              "currencyCode": "THB"
+            },
+            "retailPrice": {
+              "amount": 395,
+              "currencyCode": "THB"
+            },
+            "buyLink": "https://play.google.com/store/books/details?id=6o9oEQAAQBAJ&rdid=book-6o9oEQAAQBAJ&rdot=1&source=gbs_api",
+            "offers": [
+              {
+                "finskyOfferType": 1,
+                "listPrice": {
+                  "amountInMicros": 580880000,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amountInMicros": 395000000,
+                  "currencyCode": "THB"
+                }
+              }
+            ]
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD_Coding_%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2_P-sample-pdf.acsm?id=6o9oEQAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=6o9oEQAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... <b>Python</b> 3.12.0 Tcl / Tk Support ( 64 - bit ) <b>python</b> windows for 4. จะ ปรากฏ หน้าต่าง แสดง การ ติด ตั้ง เสร็จ สมบูรณ์ ให้ คลิก ปุ่ม <b>Python</b> 3.12.0 ( 64 - bit ) Setup Setup was successful New to ... <b>Python</b> ( Introduction to <b>Python</b> )〈 5 〉"
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "1HxWGezDZcgC",
+          "etag": "TNYPypW4ZXw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/1HxWGezDZcgC",
+          "volumeInfo": {
+            "title": "Learning Python",
+            "subtitle": "Powerful Object-Oriented Programming",
+            "authors": [
+              "Mark Lutz"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2009-10-06",
+            "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449379322"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "144937932X"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 1218,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 4,
+            "ratingsCount": 5,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "0.12.9.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&pg=PA7&dq=pythone&hl=&cd=3&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Learning_Python.html?hl=&id=1HxWGezDZcgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=1HxWGezDZcgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... <b>Python</b> today compile (i.e., translate) source code state- ments to an intermediate format known as byte code and then interpret the byte code. Byte code provides portability, as it is a platform-independent format. However, be- cause <b>Python</b>&nbsp;..."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "oxQ6EAAAQBAJ",
+          "etag": "iq8Ssicm0Hw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/oxQ6EAAAQBAJ",
+          "volumeInfo": {
+            "title": "คู่มือ Coding ภาษา Python ฉบับสมบูรณ์",
+            "authors": [
+              "ผศ.สุดา เธียรมนตรี"
+            ],
+            "publisher": "Hytexts Interactive Limited",
+            "description": "เริ่มต้นฝึกฝนอย่างถูกต้องง่าย ๆ รวดเร็ว ด้วยหลักการและแบบฝึกหัดต่าง ๆ พร้อมคำอธิบาย ครอบคลุมพื้นฐานไปจนการใช้งานระดับสูง อาทิ OOP, Database, Data Visualization , Data Science keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "0.0.1.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=oxQ6EAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=oxQ6EAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "th",
+            "previewLink": "http://books.google.co.th/books?id=oxQ6EAAAQBAJ&pg=PA3&dq=pythone&hl=&cd=4&source=gbs_api",
+            "infoLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ&source=gbs_api",
+            "canonicalVolumeLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "FOR_SALE",
+            "isEbook": true,
+            "listPrice": {
+              "amount": 485.29,
+              "currencyCode": "THB"
+            },
+            "retailPrice": {
+              "amount": 330,
+              "currencyCode": "THB"
+            },
+            "buyLink": "https://play.google.com/store/books/details?id=oxQ6EAAAQBAJ&rdid=book-oxQ6EAAAQBAJ&rdot=1&source=gbs_api",
+            "offers": [
+              {
+                "finskyOfferType": 1,
+                "listPrice": {
+                  "amountInMicros": 485290000,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amountInMicros": 330000000,
+                  "currencyCode": "THB"
+                }
+              }
+            ]
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD_Coding_%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2_P-sample-pdf.acsm?id=oxQ6EAAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=oxQ6EAAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "ผศ.สุดา เธียรมนตรี. <b>Python</b> ใน การ พัฒนา โปรแกรม ด้วย ภาษา <b>Python</b> จะ มี เครื่องมือ ที่ รองรับ การ พัฒนา มากมาย ซึ่ง เครื่องมือ แต่ละ ตัว ก็ จะ มี คุณลักษณะ ที่ แตก ต่าง กัน ไป เช่น Komodo IDE เป็น ชุด เครื่องมือ ที่ มี ลิขสิทธิ์ มี ค่า ใช้ จ่าย รองรับ ใน หลาย ภาษา เช่น <b>Python</b>&nbsp;..."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "B_VeEAAAQBAJ",
+          "etag": "FuRZS9UsLIc",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/B_VeEAAAQBAJ",
+          "volumeInfo": {
+            "title": "Python Data Science เรียนรู้ Concept และฝึกฝน Coding",
+            "authors": [
+              "ศุภชัย สมพานิช"
+            ],
+            "publisher": "Hytexts Interactive Limited",
+            "description": "เรียนรู้หลักการเขียนโปรแกรมเกี่ยวกับ Data Science ด้วยภาษา Python โดยเรียนรู้ภาษาและคำสั่งที่จำเป็นจนสามารถนำไปประยุกต์ใช้งานได้จริง keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 346,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "0.1.0.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=B_VeEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=B_VeEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "th",
+            "previewLink": "http://books.google.co.th/books?id=B_VeEAAAQBAJ&pg=PA8&dq=pythone&hl=&cd=5&source=gbs_api",
+            "infoLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ&source=gbs_api",
+            "canonicalVolumeLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "FOR_SALE",
+            "isEbook": true,
+            "listPrice": {
+              "amount": 529.41,
+              "currencyCode": "THB"
+            },
+            "retailPrice": {
+              "amount": 360,
+              "currencyCode": "THB"
+            },
+            "buyLink": "https://play.google.com/store/books/details?id=B_VeEAAAQBAJ&rdid=book-B_VeEAAAQBAJ&rdot=1&source=gbs_api",
+            "offers": [
+              {
+                "finskyOfferType": 1,
+                "listPrice": {
+                  "amountInMicros": 529410000,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amountInMicros": 360000000,
+                  "currencyCode": "THB"
+                }
+              }
+            ]
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/Python_Data_Science_%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%A3-sample-pdf.acsm?id=B_VeEAAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=B_VeEAAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... Inspect Code ... <b>Python</b> file <b>Python</b> unit test รูป ที่ 1-10 แสดง การ สร้าง ไฟล์ ที่ ชื่อว่า BasicPython ( .py ) 3. ใน ไฟล์ BasicPython.py ให้ เขียน โค้ด ต่อ ไป นี้. 8 <b>Python</b> Data Science เรียน รู้ Concept และ ฝึกฝน Coding م <b>Python</b> Data Science."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "mh0bU6NXrBgC",
+          "etag": "EWi7aMqRJU0",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/mh0bU6NXrBgC",
+          "volumeInfo": {
+            "title": "Core Python Programming",
+            "authors": [
+              "Wesley Chun"
+            ],
+            "publisher": "Prentice Hall Professional",
+            "publishedDate": "2001",
+            "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9780130260369"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "0130260363"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 805,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 3.5,
+            "ratingsCount": 13,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.4.3.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&printsec=frontcover&dq=pythone&hl=&cd=6&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Core_Python_Programming.html?hl=&id=mh0bU6NXrBgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": false
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=mh0bU6NXrBgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "UWlo-c4WEpAC",
+          "etag": "ELCmcudsj30",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/UWlo-c4WEpAC",
+          "volumeInfo": {
+            "title": "Python for Data Analysis",
+            "authors": [
+              "Wes McKinney"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2013",
+            "description": "Serves as an introduction to Python for data-intensive applications.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449319793"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1449319793"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 471,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.1.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&printsec=frontcover&dq=pythone&hl=&cd=7&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_for_Data_Analysis.html?hl=&id=UWlo-c4WEpAC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=UWlo-c4WEpAC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Serves as an introduction to Python for data-intensive applications."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "b-2oDwAAQBAJ",
+          "etag": "n0iIfOQoAnQ",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/b-2oDwAAQBAJ",
+          "volumeInfo": {
+            "title": "Python Programming in Context",
+            "authors": [
+              "Bradley N. Miller",
+              "David L. Ranum",
+              "Julie Anderson"
+            ],
+            "publisher": "Jones & Bartlett Learning",
+            "publishedDate": "2019-10-01",
+            "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781284175554"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1284175553"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 516,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.2.2.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=8&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming_in_Context.html?hl=&id=b-2oDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/Python_Programming_in_Context-sample-pdf.acsm?id=b-2oDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=b-2oDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "JmE4zgEACAAJ",
+          "etag": "9DjA6GAKApE",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/JmE4zgEACAAJ",
+          "volumeInfo": {
+            "title": "Python Programming",
+            "subtitle": "This Book Includes: Python for Beginners - Python for Data Science",
+            "authors": [
+              "Daniel O'Reilly"
+            ],
+            "publishedDate": "2021-02-08",
+            "description": "★ 55% OFF for Bookstores! NOW at $45.95 instead of $55.95★ Would You Like to Know How to Automate Boring Stuff Quickly? Discover the Easiest Way to Learn Everything About Python and Machine Learning! Are you ready to embark on a great journey through the incredible world of Python and data science? If you are reading this, you probably have a keen interest in programming and computer science. You like to know how things work, and you want to make them work as efficiently as possible, right? If so, then Python is the perfect programming language for you to learn! Would you like to: Learn how programming in Python works? Learn to automate tasks with Python? Bring your ideas to life faster and monetize them easily? But you: Have no prior knowledge about Python? Are a little bit afraid because it seems complicated? Well, if the answer to any question is \"yes,\" then the solution you are looking for is right in front of you. With this incredible bundle in your hands, you will go from beginner to pro in no time. The guides found inside this bundle are designed explicitly for people with little or no prior knowledge about Python programming. Every manual is written in a step-by-step and easy to digest manner so that you can understand Python without any trouble. Here's what this bundle about Python programming and data science can offer you: Basics of programming with Python: A comprehensive guide on how to get everything up and running. Essential tools guide: Learn how to use the best tools that are available for programming with Python. Programming made easy: Quick and easy way to learn how to make amazing and useful programs. Mastering the art of programming: Find out how to go from beginner to pro in no time with unique coding methods. Practical techniques and exercises: Put your knowledge to test and bring your ideas to life in no time. It doesn't matter if you are a beginner or you have never coded before; this guide will slowly ease you into the world of Python and data science. While most of the other similar books focus purely on theory and complicated concepts, these guides focus on a more practical approach to learning Python and data science. First of all, you'll learn basic programming concepts, such as variables, lists, classes, and loops. Then you will practice clean code writing and how to test your code safely. After that, you'll be able to put your knowledge to the test with some practical projects. Here is what else this bundle will show you: The basics of data types, variables, and structures How to properly define the data type of data structure Suitable types of operations and functions for data structuring Methods and applications of data analysis The basics of neural networks and how to create one Use of algorithm and models in data science Using data for prediction and deep learning The best thing about Python is that it's easy to learn and even easier to get up and running. By using tools like Django, for example, you can quickly bring your ideas and creations to life and start monetizing them in no time. The second best thing about learning how to program in Python is the advantage you'll have when you start learning other programming languages-after you master Python, learning different programming languages will be a piece of cake. If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_10",
+                "identifier": "180182603X"
+              },
+              {
+                "type": "ISBN_13",
+                "identifier": "9781801826037"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": false
+            },
+            "pageCount": 292,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "preview-1.0.0",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&cd=9&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming.html?hl=&id=JmE4zgEACAAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "NO_PAGES",
+            "embeddable": false,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": false
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=JmE4zgEACAAJ&hl=&source=gbs_api",
+            "accessViewStatus": "NONE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!"
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "5rLqDwAAQBAJ",
+          "etag": "15xTwPIIzJk",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/5rLqDwAAQBAJ",
+          "volumeInfo": {
+            "title": "คู่มือเรียนเขียนโปรแกรมภาษา Python ฉบับสมบูรณ์",
+            "authors": [
+              "ผศ.สุดา เธียรมนตรี"
+            ],
+            "publisher": "Hytexts Interactive Limited",
+            "description": "อ่านเข้าใจง่าย มีแบบฝึกหัดและตัวอย่างพร้อมคำอธิบายทุกหัวข้อ มีตัวอย่างประยุกต์การพัฒนาโปรแกรมที่หลากหลาย เหมาะสำหรับนักเรียน นักศึกษา และผู้ที่สนใจเขียนโปรแกรมภาษา Python keyword: นิยาย, นิยายไทย, Thai novel, Thai ebook, hytexts, หนังสือ, idcpremier",
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 418,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "2.1.1.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=5rLqDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=5rLqDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "th",
+            "previewLink": "http://books.google.co.th/books?id=5rLqDwAAQBAJ&pg=PA3&dq=pythone&hl=&cd=10&source=gbs_api",
+            "infoLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ&source=gbs_api",
+            "canonicalVolumeLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "FOR_SALE",
+            "isEbook": true,
+            "listPrice": {
+              "amount": 470.59,
+              "currencyCode": "THB"
+            },
+            "retailPrice": {
+              "amount": 320,
+              "currencyCode": "THB"
+            },
+            "buyLink": "https://play.google.com/store/books/details?id=5rLqDwAAQBAJ&rdid=book-5rLqDwAAQBAJ&rdot=1&source=gbs_api",
+            "offers": [
+              {
+                "finskyOfferType": 1,
+                "listPrice": {
+                  "amountInMicros": 470590000,
+                  "currencyCode": "THB"
+                },
+                "retailPrice": {
+                  "amountInMicros": 320000000,
+                  "currencyCode": "THB"
+                }
+              }
+            ]
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%80%E0%B8%82-sample-pdf.acsm?id=5rLqDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=5rLqDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... <b>Python</b> ใน การ พัฒนา โปรแกรม ด้วย ภาษา <b>Python</b> จะ มี เครื่องมือ ที่ รองรับ การ พัฒนา มากมาย ซึ่ง เครื่องมือ แต่ละ ตัว ก็ จะ มี คุณลักษณะ ที่ แตก ต่าง กัน ไป เช่น • • • • • Komodo IDE เป็น ชุด เครื่องมือ ที่ มี ลิขสิทธิ์ มี ค่า ใช้ จ่าย รองรับ ใน หลาย ภาษา เช่น <b>Python</b>&nbsp;..."
+          }
+        }
+      }
+    ],
+    "Filter for books that has ISBN": [
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "vilmDwAAQBAJ",
+          "etag": "pBTkz9TxBqw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/vilmDwAAQBAJ",
+          "volumeInfo": {
+            "title": "The Power of Python",
+            "authors": [
+              "Rachel Keranen"
+            ],
+            "publisher": "Cavendish Square Publishing, LLC",
+            "publishedDate": "2017-12-15",
+            "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781502629494"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1502629496"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 114,
+            "printType": "BOOK",
+            "categories": [
+              "Juvenile Nonfiction"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.3.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=1&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/The_Power_of_Python.html?hl=&id=vilmDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-epub.acsm?id=vilmDwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-pdf.acsm?id=vilmDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=vilmDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "1HxWGezDZcgC",
+          "etag": "TNYPypW4ZXw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/1HxWGezDZcgC",
+          "volumeInfo": {
+            "title": "Learning Python",
+            "subtitle": "Powerful Object-Oriented Programming",
+            "authors": [
+              "Mark Lutz"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2009-10-06",
+            "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449379322"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "144937932X"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 1218,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 4,
+            "ratingsCount": 5,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "0.12.9.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&pg=PA7&dq=pythone&hl=&cd=3&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Learning_Python.html?hl=&id=1HxWGezDZcgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=1HxWGezDZcgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... <b>Python</b> today compile (i.e., translate) source code state- ments to an intermediate format known as byte code and then interpret the byte code. Byte code provides portability, as it is a platform-independent format. However, be- cause <b>Python</b>&nbsp;..."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "mh0bU6NXrBgC",
+          "etag": "EWi7aMqRJU0",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/mh0bU6NXrBgC",
+          "volumeInfo": {
+            "title": "Core Python Programming",
+            "authors": [
+              "Wesley Chun"
+            ],
+            "publisher": "Prentice Hall Professional",
+            "publishedDate": "2001",
+            "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9780130260369"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "0130260363"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 805,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 3.5,
+            "ratingsCount": 13,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.4.3.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&printsec=frontcover&dq=pythone&hl=&cd=6&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Core_Python_Programming.html?hl=&id=mh0bU6NXrBgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": false
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=mh0bU6NXrBgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "UWlo-c4WEpAC",
+          "etag": "ELCmcudsj30",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/UWlo-c4WEpAC",
+          "volumeInfo": {
+            "title": "Python for Data Analysis",
+            "authors": [
+              "Wes McKinney"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2013",
+            "description": "Serves as an introduction to Python for data-intensive applications.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449319793"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1449319793"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 471,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.1.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&printsec=frontcover&dq=pythone&hl=&cd=7&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_for_Data_Analysis.html?hl=&id=UWlo-c4WEpAC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=UWlo-c4WEpAC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Serves as an introduction to Python for data-intensive applications."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "b-2oDwAAQBAJ",
+          "etag": "n0iIfOQoAnQ",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/b-2oDwAAQBAJ",
+          "volumeInfo": {
+            "title": "Python Programming in Context",
+            "authors": [
+              "Bradley N. Miller",
+              "David L. Ranum",
+              "Julie Anderson"
+            ],
+            "publisher": "Jones & Bartlett Learning",
+            "publishedDate": "2019-10-01",
+            "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781284175554"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1284175553"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 516,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.2.2.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=8&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming_in_Context.html?hl=&id=b-2oDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/Python_Programming_in_Context-sample-pdf.acsm?id=b-2oDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=b-2oDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "JmE4zgEACAAJ",
+          "etag": "9DjA6GAKApE",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/JmE4zgEACAAJ",
+          "volumeInfo": {
+            "title": "Python Programming",
+            "subtitle": "This Book Includes: Python for Beginners - Python for Data Science",
+            "authors": [
+              "Daniel O'Reilly"
+            ],
+            "publishedDate": "2021-02-08",
+            "description": "★ 55% OFF for Bookstores! NOW at $45.95 instead of $55.95★ Would You Like to Know How to Automate Boring Stuff Quickly? Discover the Easiest Way to Learn Everything About Python and Machine Learning! Are you ready to embark on a great journey through the incredible world of Python and data science? If you are reading this, you probably have a keen interest in programming and computer science. You like to know how things work, and you want to make them work as efficiently as possible, right? If so, then Python is the perfect programming language for you to learn! Would you like to: Learn how programming in Python works? Learn to automate tasks with Python? Bring your ideas to life faster and monetize them easily? But you: Have no prior knowledge about Python? Are a little bit afraid because it seems complicated? Well, if the answer to any question is \"yes,\" then the solution you are looking for is right in front of you. With this incredible bundle in your hands, you will go from beginner to pro in no time. The guides found inside this bundle are designed explicitly for people with little or no prior knowledge about Python programming. Every manual is written in a step-by-step and easy to digest manner so that you can understand Python without any trouble. Here's what this bundle about Python programming and data science can offer you: Basics of programming with Python: A comprehensive guide on how to get everything up and running. Essential tools guide: Learn how to use the best tools that are available for programming with Python. Programming made easy: Quick and easy way to learn how to make amazing and useful programs. Mastering the art of programming: Find out how to go from beginner to pro in no time with unique coding methods. Practical techniques and exercises: Put your knowledge to test and bring your ideas to life in no time. It doesn't matter if you are a beginner or you have never coded before; this guide will slowly ease you into the world of Python and data science. While most of the other similar books focus purely on theory and complicated concepts, these guides focus on a more practical approach to learning Python and data science. First of all, you'll learn basic programming concepts, such as variables, lists, classes, and loops. Then you will practice clean code writing and how to test your code safely. After that, you'll be able to put your knowledge to the test with some practical projects. Here is what else this bundle will show you: The basics of data types, variables, and structures How to properly define the data type of data structure Suitable types of operations and functions for data structuring Methods and applications of data analysis The basics of neural networks and how to create one Use of algorithm and models in data science Using data for prediction and deep learning The best thing about Python is that it's easy to learn and even easier to get up and running. By using tools like Django, for example, you can quickly bring your ideas and creations to life and start monetizing them in no time. The second best thing about learning how to program in Python is the advantage you'll have when you start learning other programming languages-after you master Python, learning different programming languages will be a piece of cake. If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_10",
+                "identifier": "180182603X"
+              },
+              {
+                "type": "ISBN_13",
+                "identifier": "9781801826037"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": false
+            },
+            "pageCount": 292,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "preview-1.0.0",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=JmE4zgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&cd=9&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=JmE4zgEACAAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming.html?hl=&id=JmE4zgEACAAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "NO_PAGES",
+            "embeddable": false,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": false
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=JmE4zgEACAAJ&hl=&source=gbs_api",
+            "accessViewStatus": "NONE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "If you want to conquer the Python programming language in no time, all you have to do is take these guides in your hands and follow the step-by-step instructions. Get Your Copy Now!"
+          }
+        }
+      }
+    ],
+    "Limit 5 books": [
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "vilmDwAAQBAJ",
+          "etag": "pBTkz9TxBqw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/vilmDwAAQBAJ",
+          "volumeInfo": {
+            "title": "The Power of Python",
+            "authors": [
+              "Rachel Keranen"
+            ],
+            "publisher": "Cavendish Square Publishing, LLC",
+            "publishedDate": "2017-12-15",
+            "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781502629494"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1502629496"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 114,
+            "printType": "BOOK",
+            "categories": [
+              "Juvenile Nonfiction"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.3.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=1&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=vilmDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/The_Power_of_Python.html?hl=&id=vilmDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-epub.acsm?id=vilmDwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/The_Power_of_Python-sample-pdf.acsm?id=vilmDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=vilmDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "1HxWGezDZcgC",
+          "etag": "TNYPypW4ZXw",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/1HxWGezDZcgC",
+          "volumeInfo": {
+            "title": "Learning Python",
+            "subtitle": "Powerful Object-Oriented Programming",
+            "authors": [
+              "Mark Lutz"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2009-10-06",
+            "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449379322"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "144937932X"
+              }
+            ],
+            "readingModes": {
+              "text": true,
+              "image": true
+            },
+            "pageCount": 1218,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 4,
+            "ratingsCount": 5,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": true,
+            "contentVersion": "0.12.9.0.preview.3",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&pg=PA7&dq=pythone&hl=&cd=3&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=1HxWGezDZcgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Learning_Python.html?hl=&id=1HxWGezDZcgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": true
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=1HxWGezDZcgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "... <b>Python</b> today compile (i.e., translate) source code state- ments to an intermediate format known as byte code and then interpret the byte code. Byte code provides portability, as it is a platform-independent format. However, be- cause <b>Python</b>&nbsp;..."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "mh0bU6NXrBgC",
+          "etag": "EWi7aMqRJU0",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/mh0bU6NXrBgC",
+          "volumeInfo": {
+            "title": "Core Python Programming",
+            "authors": [
+              "Wesley Chun"
+            ],
+            "publisher": "Prentice Hall Professional",
+            "publishedDate": "2001",
+            "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9780130260369"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "0130260363"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 805,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "averageRating": 3.5,
+            "ratingsCount": 13,
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.4.3.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&printsec=frontcover&dq=pythone&hl=&cd=6&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=mh0bU6NXrBgC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Core_Python_Programming.html?hl=&id=mh0bU6NXrBgC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": false
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=mh0bU6NXrBgC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "UWlo-c4WEpAC",
+          "etag": "ELCmcudsj30",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/UWlo-c4WEpAC",
+          "volumeInfo": {
+            "title": "Python for Data Analysis",
+            "authors": [
+              "Wes McKinney"
+            ],
+            "publisher": "\"O'Reilly Media, Inc.\"",
+            "publishedDate": "2013",
+            "description": "Serves as an introduction to Python for data-intensive applications.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781449319793"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1449319793"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 471,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.3.1.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&printsec=frontcover&dq=pythone&hl=&cd=7&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=UWlo-c4WEpAC&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_for_Data_Analysis.html?hl=&id=UWlo-c4WEpAC"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=UWlo-c4WEpAC&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Serves as an introduction to Python for data-intensive applications."
+          }
+        }
+      },
+      {
+        "json": {
+          "kind": "books#volume",
+          "id": "b-2oDwAAQBAJ",
+          "etag": "n0iIfOQoAnQ",
+          "selfLink": "https://www.googleapis.com/books/v1/volumes/b-2oDwAAQBAJ",
+          "volumeInfo": {
+            "title": "Python Programming in Context",
+            "authors": [
+              "Bradley N. Miller",
+              "David L. Ranum",
+              "Julie Anderson"
+            ],
+            "publisher": "Jones & Bartlett Learning",
+            "publishedDate": "2019-10-01",
+            "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+            "industryIdentifiers": [
+              {
+                "type": "ISBN_13",
+                "identifier": "9781284175554"
+              },
+              {
+                "type": "ISBN_10",
+                "identifier": "1284175553"
+              }
+            ],
+            "readingModes": {
+              "text": false,
+              "image": true
+            },
+            "pageCount": 516,
+            "printType": "BOOK",
+            "categories": [
+              "Computers"
+            ],
+            "maturityRating": "NOT_MATURE",
+            "allowAnonLogging": false,
+            "contentVersion": "0.2.2.0.preview.1",
+            "panelizationSummary": {
+              "containsEpubBubbles": false,
+              "containsImageBubbles": false
+            },
+            "imageLinks": {
+              "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+              "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+            },
+            "language": "en",
+            "previewLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&printsec=frontcover&dq=pythone&hl=&cd=8&source=gbs_api",
+            "infoLink": "http://books.google.co.th/books?id=b-2oDwAAQBAJ&dq=pythone&hl=&source=gbs_api",
+            "canonicalVolumeLink": "https://books.google.com/books/about/Python_Programming_in_Context.html?hl=&id=b-2oDwAAQBAJ"
+          },
+          "saleInfo": {
+            "country": "TH",
+            "saleability": "NOT_FOR_SALE",
+            "isEbook": false
+          },
+          "accessInfo": {
+            "country": "TH",
+            "viewability": "PARTIAL",
+            "embeddable": true,
+            "publicDomain": false,
+            "textToSpeechPermission": "ALLOWED",
+            "epub": {
+              "isAvailable": false
+            },
+            "pdf": {
+              "isAvailable": true,
+              "acsTokenLink": "http://books.google.co.th/books/download/Python_Programming_in_Context-sample-pdf.acsm?id=b-2oDwAAQBAJ&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+            },
+            "webReaderLink": "http://play.google.com/books/reader?id=b-2oDwAAQBAJ&hl=&source=gbs_api",
+            "accessViewStatus": "SAMPLE",
+            "quoteSharingAllowed": false
+          },
+          "searchInfo": {
+            "textSnippet": "Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics."
+          }
+        }
+      }
+    ],
+    "final df": [
+      {
+        "json": {
+          "title": "The Power of Python",
+          "authors": "Rachel Keranen",
+          "isbn": "9781502629494",
+          "publisher": null,
+          "publishedDate": "2017-12-15",
+          "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+          "printType": "BOOK",
+          "categories": "Juvenile Nonfiction",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Learning Python",
+          "authors": "Mark Lutz",
+          "isbn": "9781449379322",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2009-10-06",
+          "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 4,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Core Python Programming",
+          "authors": "Wesley Chun",
+          "isbn": "9780130260369",
+          "publisher": null,
+          "publishedDate": "2001",
+          "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 3.5,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python for Data Analysis",
+          "authors": "Wes McKinney",
+          "isbn": "9781449319793",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2013",
+          "description": "Serves as an introduction to Python for data-intensive applications.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python Programming in Context",
+          "authors": "Bradley N. Miller,David L. Ranum,Julie Anderson",
+          "isbn": "9781284175554",
+          "publisher": null,
+          "publishedDate": "2019-10-01",
+          "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      }
+    ],
+    "Remove Duplicates": [
+      {
+        "json": {
+          "title": "The Power of Python",
+          "authors": "Rachel Keranen",
+          "isbn": "9781502629494",
+          "publisher": null,
+          "publishedDate": "2017-12-15",
+          "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+          "printType": "BOOK",
+          "categories": "Juvenile Nonfiction",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "title": "Learning Python",
+          "authors": "Mark Lutz",
+          "isbn": "9781449379322",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2009-10-06",
+          "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 4,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "pairedItem": {
+          "item": 1
+        }
+      },
+      {
+        "json": {
+          "title": "Core Python Programming",
+          "authors": "Wesley Chun",
+          "isbn": "9780130260369",
+          "publisher": null,
+          "publishedDate": "2001",
+          "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 3.5,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "pairedItem": {
+          "item": 2
+        }
+      },
+      {
+        "json": {
+          "title": "Python for Data Analysis",
+          "authors": "Wes McKinney",
+          "isbn": "9781449319793",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2013",
+          "description": "Serves as an introduction to Python for data-intensive applications.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "pairedItem": {
+          "item": 3
+        }
+      },
+      {
+        "json": {
+          "title": "Python Programming in Context",
+          "authors": "Bradley N. Miller,David L. Ranum,Julie Anderson",
+          "isbn": "9781284175554",
+          "publisher": null,
+          "publishedDate": "2019-10-01",
+          "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "pairedItem": {
+          "item": 4
+        }
+      }
+    ],
+    "Remove Duplicates1": [
+      {
+        "json": {
+          "title": "The Power of Python",
+          "authors": "Rachel Keranen",
+          "isbn": "9781502629494",
+          "publisher": null,
+          "publishedDate": "2017-12-15",
+          "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+          "printType": "BOOK",
+          "categories": "Juvenile Nonfiction",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Learning Python",
+          "authors": "Mark Lutz",
+          "isbn": "9781449379322",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2009-10-06",
+          "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 4,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Core Python Programming",
+          "authors": "Wesley Chun",
+          "isbn": "9780130260369",
+          "publisher": null,
+          "publishedDate": "2001",
+          "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 3.5,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python for Data Analysis",
+          "authors": "Wes McKinney",
+          "isbn": "9781449319793",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2013",
+          "description": "Serves as an introduction to Python for data-intensive applications.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python Programming in Context",
+          "authors": "Bradley N. Miller,David L. Ranum,Julie Anderson",
+          "isbn": "9781284175554",
+          "publisher": null,
+          "publishedDate": "2019-10-01",
+          "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      }
+    ],
+    "Remove Duplicates2": [
+      {
+        "json": {
+          "title": "The Power of Python",
+          "authors": "Rachel Keranen",
+          "isbn": "9781502629494",
+          "publisher": null,
+          "publishedDate": "2017-12-15",
+          "description": "Though Python takes its name from the comical British television series Monty Python's Flying Circus, the coding language is seriously powerful. Guido van Rossum, the programmer who wrote Python, was motivated to create a coding language that is intuitive and easy to understand. This book traces how van Rossum achieved his goal and how both novice programmers and experts use Python to create apps like Instagram and Pinterest and to achieve other objectives.",
+          "printType": "BOOK",
+          "categories": "Juvenile Nonfiction",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=vilmDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Learning Python",
+          "authors": "Mark Lutz",
+          "isbn": "9781449379322",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2009-10-06",
+          "description": "Google and YouTube use Python because it's highly adaptable, easy to maintain, and allows for rapid development. If you want to write high-quality, efficient code that's easily integrated with other languages and tools, this hands-on book will help you be productive with Python quickly -- whether you're new to programming or just new to Python. It's an easy-to-follow self-paced tutorial, based on author and Python expert Mark Lutz's popular training course. Each chapter contains a stand-alone lesson on a key component of the language, and includes a unique Test Your Knowledge section with practical exercises and quizzes, so you can practice new skills and test your understanding as you go. You'll find lots of annotated examples and illustrations to help you get started with Python 3.0. Learn about Python's major built-in object types, such as numbers, lists, and dictionaries Create and process objects using Python statements, and learn Python's general syntax model Structure and reuse code using functions, Python's basic procedural tool Learn about Python modules: packages of statements, functions, and other tools, organized into larger components Discover Python's object-oriented programming tool for structuring code Learn about the exception-handling model, and development tools for writing larger programs Explore advanced Python tools including decorators, descriptors, metaclasses, and Unicode processing",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 4,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=1HxWGezDZcgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Core Python Programming",
+          "authors": "Wesley Chun",
+          "isbn": "9780130260369",
+          "publisher": null,
+          "publishedDate": "2001",
+          "description": "Experts and novices alike will be able to find information about every command they'll need to use Linux. This complete, practical desk reference is organized by function, with a road map-style alphabetical reference for quick access of information about all aspects of running and administering the program. The CD-ROM contains Windows and Linux Python distributions plus extensive cross-platform source code from the book.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": 3.5,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=mh0bU6NXrBgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python for Data Analysis",
+          "authors": "Wes McKinney",
+          "isbn": "9781449319793",
+          "publisher": "O'Reilly Media, Inc.",
+          "publishedDate": "2013",
+          "description": "Serves as an introduction to Python for data-intensive applications.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=UWlo-c4WEpAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      },
+      {
+        "json": {
+          "title": "Python Programming in Context",
+          "authors": "Bradley N. Miller,David L. Ranum,Julie Anderson",
+          "isbn": "9781284175554",
+          "publisher": null,
+          "publishedDate": "2019-10-01",
+          "description": "Python Programming in Context, Third Edition provides a comprehensive and accessible introduction to Python fundamentals. Updated with the latest version of Python, the new Third Edition offers a thorough overview of multiple applied areas, including image processing, cryptography, astronomy, the Internet, and bioinformatics. Taking an active learning approach, each chapter starts with a comprehensive real-world project that teaches core design techniques and Python programming while engaging students. An ideal first language for learners entering the rapidly expanding field of computer science, Python gives students a solid platform of key problem-solving skills that translate easily across programming languages.",
+          "printType": "BOOK",
+          "categories": "Computers",
+          "averageRating": null,
+          "amount": null,
+          "currencyCode": null,
+          "smallThumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=b-2oDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter for books that has ISBN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Limit 5 books",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Limit 5 books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit 5 books": {
+      "main": [
+        [
+          {
+            "node": "final df",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter for books that has ISBN": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final df": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "check if the book has no cache1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if the book has no cache": {
+      "main": [
+        [
+          {
+            "node": "Vector Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Embedding": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates2": {
+      "main": [
+        [
+          {
+            "node": "check if the book has no cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if the book has no cache1": {
+      "main": [
+        [
+          {
+            "node": "check if the book has no cache",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove Duplicates2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d1240e95-c716-4caf-a1f3-6e76c9511f58",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f9c00188d6f400698d5ec5063c8e4161b720199d095ce6574fdb762de0b579c"
+  },
+  "id": "Q02mrSRnF6iv2NFV",
+  "tags": [
+    {
+      "updatedAt": "2026-03-15T14:21:05.445Z",
+      "createdAt": "2026-03-15T14:21:05.445Z",
+      "id": "3jDQ5SpxlJ0vLKr7",
+      "name": "stage"
+    },
+    {
+      "updatedAt": "2026-02-15T19:32:38.221Z",
+      "createdAt": "2026-02-15T19:32:38.221Z",
+      "id": "us7DFvs3VkMFt2cp",
+      "name": "support"
+    }
+  ]
+}

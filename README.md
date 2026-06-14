@@ -8,7 +8,7 @@ Welcome to the **LibrAIry Senior Project** repository! This project is an advanc
 
 Our system is composed of several Dockerized services, orchestrated via `docker-compose.yml`:
 
-- **n8n**: The core low-code automation engine used to build AI agents and process workflows.
+- **n8n**: The core low-code automation engine used to build AI agents and process workflows. All used n8n workflows is located in folder n8n->demo-data->workflows.
 - **Ollama**: A local LLM runner managing models like `llama3.2` and `gpt-oss:20b`.
 - **Python Worker**: A custom FastAPI backend built from scratch (`/python-worker`) to handle custom logic and extended processing.
 - **Qdrant**: A high-performance vector database used for Retrieval-Augmented Generation (RAG) and document search.(not use)

@@ -1,0 +1,1958 @@
+{
+  "name": "🛠️get additional data for old book",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "title"
+            },
+            {
+              "name": "isbn"
+            },
+            {
+              "name": "authors"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        96
+      ],
+      "id": "08b90dde-7688-4f8d-93f3-a14e0e31685f",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rating": "={{ $('final df').item.json.averageRating }}",
+            "price": "={{ $('final df').item.json.amount }}",
+            "isbn_issn": "={{ $('When Executed by Another Workflow').item.json.isbn }}",
+            "title": "={{ $('When Executed by Another Workflow').item.json.title }}",
+            "author": "={{ $('final df').item.json.authors }}",
+            "small_thumb_nail": "={{ $('final df').item.json.smallThumbnail }}",
+            "thumb_nail": "={{ $('final df').item.json.thumbnail }}",
+            "publisher": "={{ $('final df').item.json.publisher }}",
+            "year_of_publication": "={{ $('final df').item.json.publishedDate }}",
+            "description": "={{ $('final df').item.json.description }}",
+            "format": "={{ $('final df').item.json.printType }}",
+            "subject": "={{ $('final df').item.json.categories }}",
+            "currency": "={{ $('final df').item.json.currencyCode }}",
+            "bibid": "={{ $json.bibid }}",
+            "vector": "={{ $('Vector Embedding').item.json.vector_text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cache_id",
+              "displayName": "cache_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bibid",
+              "displayName": "bibid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "small_thumb_nail",
+              "displayName": "small_thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thumb_nail",
+              "displayName": "thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "publisher",
+              "displayName": "publisher",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "year_of_publication",
+              "displayName": "year_of_publication",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "format",
+              "displayName": "format",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rating",
+              "displayName": "rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_fetched_at",
+              "displayName": "last_fetched_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vector",
+              "displayName": "vector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3280,
+        -96
+      ],
+      "id": "f3be3bf6-fa37-42d9-b540-123a986ffd64",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8012e09-9668-48ef-b6d8-d65db1ac2e43",
+              "name": "book_lists",
+              "value": "={{ $json.items }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        -96
+      ],
+      "id": "d2d6ec47-8f10-46af-bc7e-3b7f22d1b643",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06770cd4-381f-47e7-9e22-9b86d3b4bcf6",
+              "name": "title",
+              "value": "={{ $json.volumeInfo.title }}",
+              "type": "string"
+            },
+            {
+              "id": "7d310da1-5243-4f31-93c7-fb3e6b54a753",
+              "name": "authors",
+              "value": "={{ $json.volumeInfo.authors.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "d7f40358-50d9-49d3-815f-df470ddbd1d5",
+              "name": "isbn",
+              "value": "={{ ($json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_13\") || $json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_10\"))?.identifier }}",
+              "type": "string"
+            },
+            {
+              "id": "66a2991e-c200-444d-9643-9ebaf42de8bd",
+              "name": "publisher",
+              "value": "={{ $json.volumeInfo.publisher }}",
+              "type": "string"
+            },
+            {
+              "id": "e479b28d-f8a5-4666-b040-d23c1490370d",
+              "name": "publishedDate",
+              "value": "={{ $json.volumeInfo.publishedDate }}",
+              "type": "string"
+            },
+            {
+              "id": "f7c4729b-c325-43e8-bf7f-5084d8579bd3",
+              "name": "description",
+              "value": "={{ $json.volumeInfo.description }}",
+              "type": "string"
+            },
+            {
+              "id": "40adee5b-70bd-4bfb-8443-4b229aac24e7",
+              "name": "printType",
+              "value": "={{ $json.volumeInfo.printType }}",
+              "type": "string"
+            },
+            {
+              "id": "e7be0eef-882b-464c-90c9-27198852ffe9",
+              "name": "categories",
+              "value": "={{ $json.volumeInfo.categories.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "644e4b07-f937-4610-bc01-8875d9401f87",
+              "name": "averageRating",
+              "value": "={{ $json.volumeInfo.averageRating }}",
+              "type": "number"
+            },
+            {
+              "id": "2c68004c-42fb-460e-aa65-367fc209dd6c",
+              "name": "amount",
+              "value": "={{ $json.saleInfo.listPrice.amount }}",
+              "type": "string"
+            },
+            {
+              "id": "e96667c7-00b4-4443-b2e0-3cb23ebfb2c2",
+              "name": "currencyCode",
+              "value": "={{ $json.saleInfo.listPrice.currencyCode }}",
+              "type": "string"
+            },
+            {
+              "id": "500a5b39-4804-4556-ace5-3a3d85b119c2",
+              "name": "smallThumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.smallThumbnail }}",
+              "type": "string"
+            },
+            {
+              "id": "e98f6d46-d171-488b-b2f8-52eb7ee21a14",
+              "name": "thumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.thumbnail }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2608,
+        -96
+      ],
+      "id": "f9185273-6811-405d-ba61-b956204768b3",
+      "name": "final df"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6d3aa9f-8ac6-4218-99df-22cd417998fa",
+              "leftValue": "={{ Object.keys($json).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        96
+      ],
+      "id": "14ae906f-a284-4ae8-9afc-ba8873197f80",
+      "name": "check if the book has no cache"
+    },
+    {
+      "parameters": {
+        "content": "ต้องใช้ข้อมูลหนังสือที่มีอยู่ในหอสมุดแล้ว**เท่านั้น**",
+        "height": 128
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -176
+      ],
+      "id": "97fe9732-6c0b-450f-9a45-fd83749f2cdb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        -96
+      ],
+      "id": "37e4bc86-afef-4a3d-8e63-bc006c20c64f",
+      "name": "Limit 5 books"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0fe9c16b-bd69-4fe2-a270-0e3e26c75b9d",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_13",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "34c0b0b5-81f4-4341-82e6-6bf54fe2d6e3",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_10",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        -96
+      ],
+      "id": "d5e4a4de-7c58-46e9-84d7-2fc02a2194d3",
+      "name": "Filter for books that has ISBN",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "book_lists",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1936,
+        -96
+      ],
+      "id": "dc601c80-11bb-4e1f-8df7-5f1a39bcc5de",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "bibliography",
+          "mode": "list",
+          "cachedResultName": "bibliography"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn",
+              "value": "={{ $json.isbn }}"
+            },
+            {
+              "column": "=title",
+              "value": "={{ $json.title }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3056,
+        -96
+      ],
+      "id": "9efd9a37-fd4c-4fcf-8443-84c9a603d3ba",
+      "name": "get bib_id",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-worker:8000/bookembed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('final df').item.json.title }}"
+            },
+            {
+              "name": "author",
+              "value": "={{ $('final df').item.json.authors }}"
+            },
+            {
+              "name": "publisher",
+              "value": "={{ $('final df').item.json.publisher }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('final df').item.json.description }}"
+            },
+            {
+              "name": "isbn",
+              "value": "={{ $('final df').item.json.isbn }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2832,
+        -96
+      ],
+      "id": "faa10459-b7a1-4e5f-a7c6-cb2ac02ce981",
+      "name": "Vector Embedding"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        608
+      ],
+      "id": "946c43cf-54cd-4099-abd7-d377aae3f687",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn_issn",
+              "value": "={{ $json.isbn }}"
+            },
+            {
+              "column": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "column": "author",
+              "value": "={{ $json.author }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        608
+      ],
+      "id": "e4cd4c7a-90fe-4bb7-8399-b75e1b3e22a8",
+      "name": "Select rows from a table1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d94a1a7c-29ec-46c0-974f-c81b4633b643",
+              "name": "isbn",
+              "value": "9786167662466",
+              "type": "string"
+            },
+            {
+              "id": "0162a59c-db40-4ff2-9c35-4ebce355fb4c",
+              "name": "title",
+              "value": "ฟิสิกส์ 2 ",
+              "type": "string"
+            },
+            {
+              "id": "40f9bf91-3f42-4775-a1ee-65493d06f940",
+              "name": "author",
+              "value": "RAYMOND A.SERWAY และคณะ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        464
+      ],
+      "id": "f77f5f2e-5df7-4504-8374-e44c3ccb6127",
+      "name": "Edit Fields1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "rating": "={{ $('final df1').item.json.averageRating }}",
+            "price": "={{ $('final df1').item.json.amount }}",
+            "isbn_issn": "={{ $('When Executed by Another Workflow').item.json.isbn }}",
+            "title": "={{ $('When Executed by Another Workflow').item.json.title }}",
+            "author": "={{ $('final df1').item.json.authors }}",
+            "small_thumb_nail": "={{ $('final df1').item.json.smallThumbnail }}",
+            "thumb_nail": "={{ $('final df1').item.json.thumbnail }}",
+            "publisher": "={{ $('final df1').item.json.publisher }}",
+            "year_of_publication": "={{ $('final df1').item.json.publishedDate }}",
+            "description": "={{ $('final df1').item.json.description }}",
+            "format": "={{ $('final df1').item.json.printType }}",
+            "subject": "={{ $('final df1').item.json.categories }}",
+            "currency": "={{ $('final df1').item.json.currencyCode }}",
+            "bibid": "={{ $json.bibid }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "cache_id",
+              "displayName": "cache_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "isbn_issn",
+              "displayName": "isbn_issn",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bibid",
+              "displayName": "bibid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "small_thumb_nail",
+              "displayName": "small_thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thumb_nail",
+              "displayName": "thumb_nail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "publisher",
+              "displayName": "publisher",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "year_of_publication",
+              "displayName": "year_of_publication",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "format",
+              "displayName": "format",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rating",
+              "displayName": "rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_fetched_at",
+              "displayName": "last_fetched_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vector",
+              "displayName": "vector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3056,
+        416
+      ],
+      "id": "d62eee18-8455-4a13-890c-4338e19893ed",
+      "name": "Insert rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8012e09-9668-48ef-b6d8-d65db1ac2e43",
+              "name": "book_lists",
+              "value": "={{ $json.items }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1488,
+        416
+      ],
+      "id": "69ab8e3b-f9de-4668-8c79-e7e74a05c2a5",
+      "name": "Edit Fields2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06770cd4-381f-47e7-9e22-9b86d3b4bcf6",
+              "name": "title",
+              "value": "={{ $json.volumeInfo.title }}",
+              "type": "string"
+            },
+            {
+              "id": "7d310da1-5243-4f31-93c7-fb3e6b54a753",
+              "name": "authors",
+              "value": "={{ $json.volumeInfo.authors.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "d7f40358-50d9-49d3-815f-df470ddbd1d5",
+              "name": "isbn",
+              "value": "={{ ($json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_13\") || $json.volumeInfo.industryIdentifiers?.find(item => item.type === \"ISBN_10\"))?.identifier }}",
+              "type": "string"
+            },
+            {
+              "id": "66a2991e-c200-444d-9643-9ebaf42de8bd",
+              "name": "publisher",
+              "value": "={{ $json.volumeInfo.publisher }}",
+              "type": "string"
+            },
+            {
+              "id": "e479b28d-f8a5-4666-b040-d23c1490370d",
+              "name": "publishedDate",
+              "value": "={{ $json.volumeInfo.publishedDate }}",
+              "type": "string"
+            },
+            {
+              "id": "f7c4729b-c325-43e8-bf7f-5084d8579bd3",
+              "name": "description",
+              "value": "={{ $json.volumeInfo.description }}",
+              "type": "string"
+            },
+            {
+              "id": "40adee5b-70bd-4bfb-8443-4b229aac24e7",
+              "name": "printType",
+              "value": "={{ $json.volumeInfo.printType }}",
+              "type": "string"
+            },
+            {
+              "id": "e7be0eef-882b-464c-90c9-27198852ffe9",
+              "name": "categories",
+              "value": "={{ $json.volumeInfo.categories.toString().replace(/[\\[\\]\"']/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "644e4b07-f937-4610-bc01-8875d9401f87",
+              "name": "averageRating",
+              "value": "={{ $json.volumeInfo.averageRating }}",
+              "type": "number"
+            },
+            {
+              "id": "2c68004c-42fb-460e-aa65-367fc209dd6c",
+              "name": "amount",
+              "value": "={{ $json.saleInfo.listPrice.amount }}",
+              "type": "string"
+            },
+            {
+              "id": "e96667c7-00b4-4443-b2e0-3cb23ebfb2c2",
+              "name": "currencyCode",
+              "value": "={{ $json.saleInfo.listPrice.currencyCode }}",
+              "type": "string"
+            },
+            {
+              "id": "500a5b39-4804-4556-ace5-3a3d85b119c2",
+              "name": "smallThumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.smallThumbnail }}",
+              "type": "string"
+            },
+            {
+              "id": "e98f6d46-d171-488b-b2f8-52eb7ee21a14",
+              "name": "thumbnail",
+              "value": "={{ $json.volumeInfo.imageLinks.thumbnail }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2384,
+        416
+      ],
+      "id": "466ee47d-5744-48d0-b50b-5f2593430674",
+      "name": "final df1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6d3aa9f-8ac6-4218-99df-22cd417998fa",
+              "leftValue": "={{ Object.keys($json).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        608
+      ],
+      "id": "e555cd1b-4386-46dc-ac26-04371f5a1ca5",
+      "name": "check if the book has no cache1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        416
+      ],
+      "id": "fa2025b7-a8f7-4a28-bd57-3e73389e3275",
+      "name": "Limit 5 books1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0fe9c16b-bd69-4fe2-a270-0e3e26c75b9d",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_13",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "34c0b0b5-81f4-4341-82e6-6bf54fe2d6e3",
+              "leftValue": "={{ $json.volumeInfo.industryIdentifiers[0].type }}",
+              "rightValue": "ISBN_10",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1936,
+        416
+      ],
+      "id": "9161a3cd-d5e0-4b9f-8eb3-bf6955ff448e",
+      "name": "Filter for books that has ISBN1",
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "book_lists",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        416
+      ],
+      "id": "47933ac1-9219-47e5-93ee-6cc70b8f5cff",
+      "name": "Split Out1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "bibliography",
+          "mode": "list",
+          "cachedResultName": "bibliography"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn",
+              "value": "={{ $json.isbn }}"
+            },
+            {
+              "column": "=title",
+              "value": "={{ $json.title }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2832,
+        416
+      ],
+      "id": "430a0942-8be2-4037-a0ad-c78165c6b9f3",
+      "name": "get bib_id1",
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/books/v1/volumes?q=isbn:{{ $('Edit Fields1').item.json.isbn }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1040,
+        416
+      ],
+      "id": "cc913ef9-c60d-4ba5-9e84-02c36a264ab1",
+      "name": "HTTP Request2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        816,
+        704
+      ],
+      "id": "904012a7-f52d-4ab4-ad1f-c3e832bfd4e6",
+      "name": "Aggregate1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://python-worker:8000/bookembed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('final df1').item.json.title }}"
+            },
+            {
+              "name": "author",
+              "value": "={{ $('final df1').item.json.authors }}"
+            },
+            {
+              "name": "publisher",
+              "value": "={{ $('final df1').item.json.publisher }}"
+            },
+            {
+              "name": "description",
+              "value": "={{ $('final df1').item.json.description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2608,
+        416
+      ],
+      "id": "317d0c0a-b9bb-40cb-af63-fd6385a4afc4",
+      "name": "Vector Embedding1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0dc8bcc8-88a0-4cf7-9e01-b0c328340e6f",
+              "leftValue": "={{ $('Edit Fields1').item.json.isbn }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        816,
+        512
+      ],
+      "id": "137465f3-0e82-49f0-b7d1-e48bf8206cb0",
+      "name": "If1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0162a59c-db40-4ff2-9c35-4ebce355fb4c",
+              "name": "title",
+              "value": "ฟิสิกส์ 2 ",
+              "type": "string"
+            },
+            {
+              "id": "40f9bf91-3f42-4775-a1ee-65493d06f940",
+              "name": "author",
+              "value": "RAYMOND A.SERWAY และคณะ",
+              "type": "string"
+            },
+            {
+              "id": "685292f1-220d-45db-a813-3a35df39e614",
+              "name": "isbn",
+              "value": "9786167662466",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        704
+      ],
+      "id": "db6c5996-3567-4240-8ec6-4415e723ae69",
+      "name": "Edit Fields3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "errorMessage": "ISBN is empty "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        608
+      ],
+      "id": "cb84c658-d647-4aa4-a93c-a4a30092963f",
+      "name": "Stop and Error",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0a9f9d5-d580-4efb-a306-4ec6436db495",
+              "leftValue": "={{ $json.totalItems }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        416
+      ],
+      "id": "39305989-b7bd-4c45-9747-2dafb19b3b26",
+      "name": "If2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "errorMessage": "ISBN is empty "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        816,
+        96
+      ],
+      "id": "bf552423-e690-4d23-83f0-68a8425dea8e",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "librairy",
+          "mode": "list",
+          "cachedResultName": "librairy"
+        },
+        "table": {
+          "__rl": true,
+          "value": "book_api_cache",
+          "mode": "list",
+          "cachedResultName": "book_api_cache"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "isbn_issn",
+              "value": "={{ $json.isbn }}"
+            },
+            {
+              "column": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "column": "author",
+              "value": "={{ $json.authors }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        144,
+        96
+      ],
+      "id": "85ea76e4-f178-453d-9e1a-8269d239846a",
+      "name": "check is there cache already ?",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "rfLfunF6QuZZjxRW",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0dc8bcc8-88a0-4cf7-9e01-b0c328340e6f",
+              "leftValue": "={{ $('When Executed by Another Workflow').first().json.isbn }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        592,
+        0
+      ],
+      "id": "b3881bda-671a-42a0-be4d-474f86a72efd",
+      "name": "check is isbn not empty ?"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/books/v1/volumes?q=isbn:{{ $('When Executed by Another Workflow').item.json.isbn }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        816,
+        -96
+      ],
+      "id": "16f03e13-a888-4696-abe6-735c707ef3fa",
+      "name": "request only isbn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0a9f9d5-d580-4efb-a306-4ec6436db495",
+              "leftValue": "={{ $json.totalItems }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        -96
+      ],
+      "id": "e8e66b0c-92e4-48a1-b33e-616e595de0e6",
+      "name": "is total items > 0"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/books/v1/volumes?q=title:{{ $('When Executed by Another Workflow').item.json.title }}+isbn:{{ $('When Executed by Another Workflow').item.json.isbn }}+authors:{{ $('When Executed by Another Workflow').item.json.authors }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1264,
+        -32
+      ],
+      "id": "647b31f1-35aa-441a-874d-98075d191aff",
+      "name": "request with title+author+isbn"
+    },
+    {
+      "parameters": {
+        "errorMessage": "can't get book info for caching "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        128
+      ],
+      "id": "7957a379-35ef-4963-90cb-96f3b68c9ef6",
+      "name": "Stop and Error2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d0a9f9d5-d580-4efb-a306-4ec6436db495",
+              "leftValue": "={{ $json.totalItems }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1472,
+        32
+      ],
+      "id": "341b7bd1-ba65-4156-9b8c-900b74b99133",
+      "name": "is total items > "
+    },
+    {
+      "parameters": {
+        "content": "📚 Workflow: Google Books Fetcher & Layered Cache System สำหรับหนังสือที่มีข้อมูลอยู่แล้วในหอสมุดแต่ต้องการข้อมูลเพิ่ม\n\n⏱️ Trigger: ถูกเรียกใช้งานจาก Workflow อื่น (When Executed by Another Workflow) โดยรับค่าอินพุตหลัก 3 ค่าคือ: title (ชื่อหนังสือ), isbn (รหัสหนังสือ), และ authors (ผู้แต่ง)\n\n🛡️ 1. ตรวจสอบ Cache ดั้งเดิมในระบบ\ncheck is there cache already?: นำไอเทมที่เข้ามาไปค้นหาในตาราง librairy.book_api_cache ดูก่อนทันทีว่าเคยบันทึกข้อมูลเล่มนี้ไว้แล้วหรือยัง\n\ncheck if the book has no cache (If Node):\n\nหาก มี Cache อยู่แล้ว (False) -> จะจบการทำงานตรงนี้ทันทีเพื่อลดภาระระบบ (เป็นท่านิยมในการทำ API Gateway/Proxy)\n\nหาก ยังไม่มี Cache (True) -> จะส่งต่อไปยังกระบวนการค้นหาข้อมูลจากภายนอกแบบเป็นลำดับขั้น (Layered Request)\n\n🔍 2. ค้นหาข้อมูลจาก Google Books API แบบเป็นลำดับขั้น (Layered Lookup Logic)\nระบบจะพยายามค้นหาด้วยเงื่อนไขที่แม่นยำที่สุดก่อน หากไม่พบจะลดหลั่นเงื่อนไขลงมา เพื่อการันตีว่าจะต้องได้ข้อมูลหนังสือกลับมาบันทึก:\n\nขั้นที่ 1: ตรวจสอบความพร้อมของข้อมูล\n\ncheck is isbn not empty?: ตรวจสอบว่ามีค่า ISBN ส่งมาด้วยหรือไม่ ถ้าไม่มีเลยจะตัดจบกระบวนการและโยน Error ทันทีที่โหนด Stop and Error1\n\nขั้นที่ 2: ค้นหาด้วย ISBN อย่างเดียว (แม่นยำที่สุด)\n\nrequest only isbn: ยิงหา Google Books ด้วยค่า ISBN\n\nis total items > 0: เช็คว่าเจอหนังสือไหม? ถ้าเจอจะส่งผลลัพธ์ไปที่โหนดจัดฟอร์แมตข้อมูล (Edit Fields) ทันที แต่ถ้าไม่เจอ (ส่งผลลัพธ์มาเป็น 0) จะส่งต่อไปค้นหาในขั้นถัดไป\n\nขั้นที่ 3: ค้นหาแบบรวมฟิลด์ (Title + Author + ISBN) (กรณีค้นหาแบบแรกไม่เจอ)\n\nrequest with title+author+isbn: ใช้คีย์เวิร์ดแบบผสมพิกัดเพื่อขยายโอกาสในการค้นหาในฐานข้อมูล Google\n\nis total items > : เช็คผลลัพธ์อีกครั้ง ถ้าเจอก็ส่งไปใช้งานต่อ แต่ถ้ายังไม่เจออีกเป็นครั้งที่สอง จะยอมแพ้และส่ง Error ออกไปที่โหนด Stop and Error2\n\n🧼 3. คัดกรองและสกัดข้อมูล (Data Extraction)\nEdit Fields & Split Out: นำข้อมูลจากรายการหนังสือ (items) มากระจายแถวออกเพื่อประมวลผลรายเล่ม\n\nFilter for books that has ISBN: กรองเอาเฉพาะเล่มที่ผลลัพธ์มีรหัส ISBN_13 หรือ ISBN_10 แนบมาด้วยจริงๆ\n\nLimit 5 books: จำกัดคัดสรรเอาเฉพาะ 5 เล่มแรกที่มีความเกี่ยวข้องสูงสุด\n\nfinal df (Set Node): ล้างสัญญลักษณ์ส่วนเกิน (เช่น ลบเครื่องหมาย Bracket หรือคำพูดเดี่ยวออกจากชื่อผู้แต่งและหมวดหมู่) เพื่อให้ข้อมูลพร้อมนำไปทำ Vectorization และใช้งานต่อในระบบ\n\n🧠 4. แปลงข้อมูลและบันทึกลงฐานข้อมูล (Embedding & Storage)\nVector Embedding: ส่งฟิลด์สำคัญ (title, author, publisher, description, isbn) ไปแปลงเป็นเวกเตอร์ที่บริการ python-worker:8000/bookembed เพื่อแปลงเป็นข้อมูลชนิดโครงข่ายประสาท (Vector Text) สำหรับใช้ค้นหาแบบ Semantic Search ใน Workflow หลัก\n\nget bib_id: ทำการ Map หรือตรวจสอบรหัสบรรณานุกรมภายในห้องสมุดจากตาราง librairy.bibliography เพื่อนำโครงสร้างความสัมพันธ์ไปผูกร่วมกัน\n\nInsert rows in a table: บันทึกข้อมูลเมทาดาต้าของหนังสือทั้งหมด พร้อมค่า Vector ที่เพิ่งสร้างเสร็จ สดใหม่ ลงในตาราง librairy.book_api_cache เป็นอันเสร็จสิ้นกระบวนการสร้าง Cache สำหรับหนังสือเล่มนั้นๆ",
+        "height": 1024,
+        "width": 1632
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1808,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "b4bc47a4-d21d-4e5a-b1ff-1254a2bef9f2",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final df": {
+      "main": [
+        [
+          {
+            "node": "Vector Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "check is there cache already ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if the book has no cache": {
+      "main": [
+        [
+          {
+            "node": "check is isbn not empty ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Limit 5 books": {
+      "main": [
+        [
+          {
+            "node": "final df",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter for books that has ISBN": {
+      "main": [
+        [
+          {
+            "node": "Limit 5 books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter for books that has ISBN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get bib_id": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Embedding": {
+      "main": [
+        [
+          {
+            "node": "get bib_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table1": {
+      "main": [
+        [
+          {
+            "node": "check if the book has no cache1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final df1": {
+      "main": [
+        [
+          {
+            "node": "Vector Embedding1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if the book has no cache1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit 5 books1": {
+      "main": [
+        [
+          {
+            "node": "final df1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter for books that has ISBN1": {
+      "main": [
+        [
+          {
+            "node": "Limit 5 books1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Filter for books that has ISBN1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get bib_id1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Embedding1": {
+      "main": [
+        [
+          {
+            "node": "get bib_id1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check is there cache already ?": {
+      "main": [
+        [
+          {
+            "node": "check if the book has no cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check is isbn not empty ?": {
+      "main": [
+        [
+          {
+            "node": "request only isbn",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "request only isbn": {
+      "main": [
+        [
+          {
+            "node": "is total items > 0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is total items > 0": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "request with title+author+isbn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "request with title+author+isbn": {
+      "main": [
+        [
+          {
+            "node": "is total items > ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is total items > ": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "448d1e1b-1ed3-427f-a36c-b3850ab761df",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6f9c00188d6f400698d5ec5063c8e4161b720199d095ce6574fdb762de0b579c"
+  },
+  "id": "lA4xOIfpNagtlRCB",
+  "tags": [
+    {
+      "updatedAt": "2026-03-15T14:21:05.445Z",
+      "createdAt": "2026-03-15T14:21:05.445Z",
+      "id": "3jDQ5SpxlJ0vLKr7",
+      "name": "stage"
+    },
+    {
+      "updatedAt": "2026-02-15T19:32:38.221Z",
+      "createdAt": "2026-02-15T19:32:38.221Z",
+      "id": "us7DFvs3VkMFt2cp",
+      "name": "support"
+    }
+  ]
+}
