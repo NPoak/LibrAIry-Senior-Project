@@ -1,6 +1,6 @@
 # LibrAIry Senior Project
 
-Welcome to the **LibrAIry Senior Project** repository! This project is an advanced, self-hosted AI automation system built on top of the [n8n Self-Hosted AI Starter Kit](https://github.com/n8n-io/self-hosted-ai-starter-kit). It is designed to run intelligent agents, process webhooks, and interact with large language models locally.
+Welcome to the **LibrAIry Senior Project** repository! This project is an advanced, self-hosted AI automation system built on top of the [n8n Self-Hosted AI Starter Kit](https://github.com/n8n-io/self-hosted-ai-starter-kit). It is designed to run intelligent agents, process webhooks, and interact with large language models locally. **GitHub repository**: [https://github.com/NPoak/LibrAIry-Senior-Project.git](https://github.com/NPoak/LibrAIry-Senior-Project.git)
 
 ---
 
